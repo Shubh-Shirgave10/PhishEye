@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Scan | PhishEye Protection</title>
+    <link rel="stylesheet" href="../History/history.css" />
+    <link rel="stylesheet" href="quickscan.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+        <div class="nav-left">
+            <button id="userMenuBtn" class="user-menu-btn">
+                <div class="user-avatar" id="userInitial">U</div>
+            </button>
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <i data-lucide="eye"></i>
+                </div>
+                <span class="brand-name">PhishEye</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Panel -->
+    <div id="navPanel" class="nav-panel hidden">
+        <div class="panel-header">
+            <div class="panel-user-info">
+                <div class="panel-user-avatar"><i data-lucide="user"></i></div>
+                <div>
+                    <span class="panel-user-name" id="userName">User</span>
+                    <span class="panel-user-email" id="userEmail">user@example.com</span>
+                </div>
+            </div>
+        </div>
+        <nav class="panel-menu">
+            <button class="panel-item" data-tab="dashboard"><i
+                    data-lucide="bar-chart-3"></i><span>Dashboard</span></button>
+            <button class="panel-item active" data-tab="quickscan"><i data-lucide="scan"></i><span>Quick
+                    Scan</span></button>
+            <button class="panel-item" data-tab="history"><i data-lucide="clock"></i><span>History</span></button>
+            <button class="panel-item" data-tab="settings"><i data-lucide="settings"></i><span>Settings</span></button>
+            <div class="panel-divider"></div>
+            <button class="panel-item logout"><i data-lucide="log-out"></i><span>Logout</span></button>
+        </nav>
+    </div>
+
+    <main class="page">
+        <header class="hero" data-animate>
+            <div>
+                <p class="eyebrow">On-Demand AI Analysis</p>
+                <h1>Quick Scan Engine</h1>
+                <p class="lead">Enter any URL below for an instant PhishEye AI security appraisal. Our cloud engine will
+                    analyze the link against thousands of threat patterns.</p>
+            </div>
+        </header>
+
+        <div class="scan-container" data-animate>
+            <div class="scan-input-wrapper">
+                <input type="text" id="urlInput" placeholder="https://example.com" spellcheck="false">
+                <button id="scanBtn" class="primary-scan-btn">
+                    <span>Scan URL</span>
+                    <i data-lucide="search"></i>
+                </button>
+            </div>
+        </div>
+
+        <section id="resultSection" class="result-section hidden" data-animate>
+            <!-- Results will be injected here -->
+        </section>
+
+        <section class="quick-history-section" data-animate>
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">Local Session</p>
+                    <h2>Recent Quick Scans</h2>
+                </div>
+            </div>
+            <div id="quickHistoryGrid" class="top-cards">
+                <!-- Local session history items -->
+            </div>
+        </section>
+    </main>
+
+    <script src="quickscan.js"></script>
+</body>
+
+</html>
