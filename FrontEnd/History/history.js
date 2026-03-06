@@ -27,9 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Navigation Panel Toggle
+  const backBtn = document.getElementById('backBtn');
   const userMenuBtn = document.getElementById('userMenuBtn');
   const navPanel = document.getElementById('navPanel');
   const panelItems = document.querySelectorAll('.panel-item[data-tab]');
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = '../Dashboard/dashboard.html';
+    };
+  }
 
   // Toggle Nav Panel
   if (userMenuBtn) {
@@ -60,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '../setting/settings.html';
       } else if (targetTab === 'quickscan') {
         window.location.href = '../QuickScan/quickscan.html';
+      } else if (targetTab === 'about') {
+        window.location.href = '../about/about.html';
       }
     });
   });
@@ -74,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Logout button
-  const logoutBtn = document.querySelector('.logout');
+  const logoutBtn = document.querySelector('.panel-item.logout');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       if (confirm('Are you sure you want to logout?')) {
@@ -128,10 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
           // Update Sync Info
           const summaryCard = document.querySelector('.summary-card');
           if (summaryCard) {
-            const unsafeCount = history.filter(h => h.result === 'Unsafe').length;
+            const malCount = history.filter(h => h.result === 'Malicious' || h.result === 'Unsafe').length;
+            const susCount = history.filter(h => h.result === 'Suspicious').length;
             summaryCard.innerHTML = `
               <p>Last Sync: <strong>Just Now</strong></p>
-              <p>${history.length} total URLs scanned • ${unsafeCount} threats blocked</p>
+              <p>${history.length} total URLs scanned • ${malCount} threats blocked • ${susCount} suspicious</p>
             `;
           }
         })
@@ -155,13 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateStats(history) {
     const total = history.length;
     const safe = history.filter(h => h.result === 'Safe').length;
-    const unsafe = history.filter(h => h.result === 'Unsafe').length;
-    // Assuming 'Unsafe' maps to 'Malicious' for now, or split if backend supports Suspicious
+    const malicious = history.filter(h => h.result === 'Malicious' || h.result === 'Unsafe').length;
+    const suspicious = history.filter(h => h.result === 'Suspicious').length;
 
     document.querySelector('.analytics-card.total strong').textContent = total;
     document.querySelector('.analytics-card.safe strong').textContent = safe;
-    document.querySelector('.analytics-card.malicious strong').textContent = unsafe;
-    // Update percentages logic here if needed
+    document.querySelector('.analytics-card.malicious strong').textContent = malicious + suspicious;
   }
 
   function renderRecent(history) {
@@ -246,7 +256,7 @@ Description: Our AI engine analyzed the target URL for structural anomalies and 
 
   function updateChart(history) {
     const safe = history.filter(h => h.result === 'Safe').length;
-    const unsafe = history.filter(h => h.result === 'Unsafe').length;
+    const unsafe = history.filter(h => h.result === 'Malicious' || h.result === 'Unsafe' || h.result === 'Suspicious').length;
 
     const canvas = document.getElementById("securityChart");
     const ctx = canvas.getContext("2d");
@@ -265,24 +275,26 @@ Description: Our AI engine analyzed the target URL for structural anomalies and 
     }
 
     securityChartInstance = new Chart(ctx, {
-      type: "pie",
+      type: "bar",
       data: {
         labels: ["Safe", "Unsafe"],
         datasets: [
           {
+            label: "Scans",
             data: [safe, unsafe],
             backgroundColor: [gradientSafe, gradientMalicious],
-            borderColor: "#050b1b",
-            borderWidth: 5,
-            hoverBorderColor: "#38bdf8",
-            hoverOffset: 18,
+            borderColor: "rgba(14, 165, 233, 0.45)",
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.6,
           },
         ],
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
+        maintainAspectRatio: false,
         animation: { duration: 1400, easing: "easeOutQuint" },
-        layout: { padding: 10 },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -295,6 +307,17 @@ Description: Our AI engine analyzed the target URL for structural anomalies and 
             cornerRadius: 10,
           },
         },
+        scales: {
+          x: {
+            grid: { display: false, drawBorder: false },
+            ticks: { color: '#9ca3af', font: { size: 12 } },
+            beginAtZero: true
+          },
+          y: {
+            grid: { color: '#1f2937', borderDash: [5, 5] },
+            ticks: { color: '#9ca3af', font: { size: 14 } }
+          }
+        }
       },
     });
   }

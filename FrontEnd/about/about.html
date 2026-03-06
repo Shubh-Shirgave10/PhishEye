@@ -11,9 +11,73 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="../navbar.css" />
+    <link rel="stylesheet" href="../theme.css" />
+    <script src="../theme.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+        <div class="nav-left">
+            <button id="backBtn" class="back-btn" title="Go Back">
+                <i data-lucide="arrow-left"></i>
+            </button>
+
+            <button id="userMenuBtn" class="user-menu-btn">
+                <div class="user-avatar">U</div>
+            </button>
+
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <i data-lucide="eye"></i>
+                </div>
+                <span class="brand-name">PhishEye</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                <span>Live</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Panel -->
+    <div id="navPanel" class="nav-panel hidden">
+        <div class="panel-header">
+            <div class="panel-user-info">
+                <div class="panel-user-avatar"><i data-lucide="user"></i></div>
+                <div>
+                    <span class="panel-user-name">User</span>
+                    <span class="panel-user-email">user@example.com</span>
+                </div>
+            </div>
+        </div>
+        <nav class="panel-menu">
+            <button class="panel-item" data-tab="dashboard">
+                <i data-lucide="bar-chart-3"></i><span>Dashboard</span>
+            </button>
+            <button class="panel-item" data-tab="quickscan">
+                <i data-lucide="scan"></i><span>Quick Scan</span>
+            </button>
+            <button class="panel-item" data-tab="history">
+                <i data-lucide="clock"></i><span>History</span>
+            </button>
+            <button class="panel-item" data-tab="settings">
+                <i data-lucide="settings"></i><span>Settings</span>
+            </button>
+            <button class="panel-item active" data-tab="about">
+                <i data-lucide="info"></i><span>About</span>
+            </button>
+            <div class="panel-divider"></div>
+            <button class="panel-item logout">
+                <i data-lucide="log-out"></i><span>Logout</span>
+            </button>
+        </nav>
+    </div>
 
     <header class="page-header">
         <div class="container">
@@ -174,20 +238,24 @@
                     <button class="view-profile-btn">View Profile</button>
                 </div>
                 <!-- Member 3 -->
-                <div class="team-card glow-card-green" data-member="mike">
-                    <div class="member-photo"
-                        style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Mike');"></div>
-                    <h3 class="member-name">Mahek Killedar</h3>
-                    <p class="member-role">Lead Frontend Dev</p>
-                    <button class="view-profile-btn">View Profile</button>
-                </div>
-                <!-- Member 4 -->
                 <div class="team-card glow-card-yellow" data-member="emily">
-                    <div class="member-photo" style="background-image: url('../image/image.png');"></div>
+                    <div class="member-photo"
+                        style="background-image: url('https://media.licdn.com/dms/image/v2/D5603AQG-pkQOhsNobA/profile-displayphoto-shrink_200_200/B56ZS7hCaYHwAY-/0/1738312789114?e=1774483200&v=beta&t=75vFaAMbd9x1NF3OfSsxYUJv293WT78q96Y5O1nulXw');">
+                    </div>
                     <h3 class="member-name">Pratiksha Patil</h3>
                     <p class="member-role">Full Stack Engineer</p>
                     <button class="view-profile-btn">View Profile</button>
                 </div>
+                <!-- Member 4 -->
+                <div class="team-card glow-card-green" data-member="mike">
+                    <div class="member-photo"
+                        style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Mahek&style=circle&backgroundColor=b6e3f4');">
+                    </div>
+                    <h3 class="member-name">Mahek Killedar</h3>
+                    <p class="member-role">Lead Frontend Dev</p>
+                    <button class="view-profile-btn">View Profile</button>
+                </div>
+
             </div>
         </div>
     </section>

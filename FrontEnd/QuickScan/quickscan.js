@@ -1,99 +1,114 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- AUTH GUARD ---
-    const token = localStorage.getItem('token');
-    const userEmail = localStorage.getItem('user_email');
+  // --- AUTH GUARD ---
+  const token = localStorage.getItem('token');
+  const userEmail = localStorage.getItem('user_email');
 
-    if (!token) {
-        window.location.href = '../login-page/login.html';
-        return;
+  if (!token) {
+    window.location.href = '../login-page/login.html';
+    return;
+  }
+
+  // Initialize Lucide Icons
+  lucide.createIcons();
+
+  // Populate User Info
+  if (userEmail) {
+    const initial = userEmail.charAt(0).toUpperCase();
+    document.getElementById('userInitial').textContent = initial;
+    document.getElementById('userName').textContent = userEmail.split('@')[0];
+    document.getElementById('userEmail').textContent = userEmail;
+  }
+
+  // Navigation logic
+  const backBtn = document.getElementById('backBtn');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const navPanel = document.getElementById('navPanel');
+  const panelItems = document.querySelectorAll('.panel-item[data-tab]');
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = '../Dashboard/dashboard.html';
+    };
+  }
+
+  userMenuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navPanel.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (navPanel && !navPanel.contains(e.target) && userMenuBtn && !userMenuBtn.contains(e.target)) {
+      navPanel.classList.add('hidden');
     }
+  });
 
-    // Initialize Lucide Icons
-    lucide.createIcons();
-
-    // Populate User Info
-    if (userEmail) {
-        const initial = userEmail.charAt(0).toUpperCase();
-        document.getElementById('userInitial').textContent = initial;
-        document.getElementById('userName').textContent = userEmail.split('@')[0];
-        document.getElementById('userEmail').textContent = userEmail;
-    }
-
-    // Navigation logic
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const navPanel = document.getElementById('navPanel');
-    const panelItems = document.querySelectorAll('.panel-item[data-tab]');
-
-    userMenuBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navPanel.classList.toggle('hidden');
+  panelItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const tab = item.getAttribute('data-tab');
+      if (tab === 'dashboard') window.location.href = '../Main_Dash/mainDash.html';
+      else if (tab === 'history') window.location.href = '../History/history.html';
+      else if (tab === 'settings') window.location.href = '../setting/settings.html';
+      else if (tab === 'about') window.location.href = '../about/about.html';
+      else if (tab === 'quickscan') navPanel.classList.add('hidden');
     });
+  });
 
-    document.addEventListener('click', () => navPanel.classList.add('hidden'));
+  // Logout
+  document.querySelector('.logout')?.addEventListener('click', () => {
+    localStorage.clear();
+    window.location.href = '../login-page/login.html';
+  });
 
-    panelItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const tab = item.getAttribute('data-tab');
-            if (tab === 'dashboard') window.location.href = '../Main_Dash/mainDash.html';
-            else if (tab === 'history') window.location.href = '../History/history.html';
-            else if (tab === 'settings') window.location.href = '../setting/settings.html';
-        });
-    });
+  // --- SCAN LOGIC ---
+  const urlInput = document.getElementById('urlInput');
+  const scanBtn = document.getElementById('scanBtn');
+  const resultSection = document.getElementById('resultSection');
 
-    // Logout
-    document.querySelector('.logout')?.addEventListener('click', () => {
-        localStorage.clear();
-        window.location.href = '../login-page/login.html';
-    });
+  scanBtn.addEventListener('click', () => {
+    const url = urlInput.value.trim();
+    if (!url) return;
 
-    // --- SCAN LOGIC ---
-    const urlInput = document.getElementById('urlInput');
-    const scanBtn = document.getElementById('scanBtn');
-    const resultSection = document.getElementById('resultSection');
-
-    scanBtn.addEventListener('click', () => {
-        const url = urlInput.value.trim();
-        if (!url) return;
-
-        // Show Loading
-        resultSection.classList.remove('hidden');
-        resultSection.innerHTML = `
+    // Show Loading
+    resultSection.classList.remove('hidden');
+    resultSection.innerHTML = `
       <div class="scanning-loader">
         <div class="pulse-loader"></div>
         <p class="eyebrow">Consulting PhishEye AI...</p>
       </div>
     `;
 
-        fetch('http://localhost:5000/api/scan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ url: url })
-        })
-            .then(res => res.json())
-            .then(data => {
-                displayResult(url, data);
-                addToSessionHistory(url, data);
-            })
-            .catch(err => {
-                resultSection.innerHTML = `<p class="error">Scan failed. Is the server running?</p>`;
-            });
-    });
+    fetch('http://localhost:5000/api/scan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ url: url })
+    })
+      .then(res => res.json())
+      .then(data => {
+        displayResult(url, data);
+        addToSessionHistory(url, data);
+      })
+      .catch(err => {
+        resultSection.innerHTML = `<p class="error">Scan failed. Is the server running?</p>`;
+      });
+  });
 
-    function displayResult(url, data) {
-        const isSafe = data.result === 'Safe';
-        const score = isSafe ? 12 : 94; // Dummy score for visual impact
+  function displayResult(url, data) {
+    const isSafe = data.status === 'Safe' || data.result === 'Safe';
+    const isSuspicious = data.status === 'Suspicious' || data.result === 'Suspicious';
+    const score = data.risk_score || (isSafe ? 12 : 94);
 
-        resultSection.innerHTML = `
-      <div class="status-hero ${isSafe ? 'safe-result' : 'unsafe-result'}">
-        <span class="status-icon-large">${isSafe ? '🛡️' : '⚠️'}</span>
-        <h2 class="status-title-large">${isSafe ? 'Website Secure' : 'Threat Detected'}</h2>
+    resultSection.innerHTML = `
+      <div class="status-hero ${isSafe ? 'safe-result' : (isSuspicious ? 'suspicious-result' : 'unsafe-result')}">
+        <span class="status-icon-large">${isSafe ? '🛡️' : (isSuspicious ? '⚠️' : '🚨')}</span>
+        <h2 class="status-title-large">${isSafe ? 'Website Secure' : (isSuspicious ? 'Suspicious Activity' : 'Threat Detected')}</h2>
         <p class="status-desc-large">
           ${isSafe
-                ? 'Our AI analysis confirmed this URL matches safe behavioral patterns.'
-                : 'Warning! This URL exhibits high-probability phishing signatures.'}
+        ? 'Our AI analysis confirmed this URL matches safe behavioral patterns.'
+        : (isSuspicious ? 'This URL shows some suspicious signs. Proceed with caution.' : 'Warning! This URL exhibits high-probability phishing signatures.')}
         </p>
         
         <div class="result-meta-grid">
@@ -102,25 +117,27 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="meta-value" style="font-size: 0.9rem; word-break: break-all;">${url}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">Confidence Score</span>
-            <span class="meta-value">${score}% Threat Certainty</span>
+            <span class="meta-label">Risk Level</span>
+            <span class="meta-value">${score}% Risk Score</span>
           </div>
         </div>
       </div>
     `;
-    }
+  }
 
-    function addToSessionHistory(url, data) {
-        const grid = document.getElementById('quickHistoryGrid');
-        const isSafe = data.result === 'Safe';
-        const type = isSafe ? 'safe' : 'malicious';
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  function addToSessionHistory(url, data) {
+    const grid = document.getElementById('quickHistoryGrid');
+    const status = data.status || data.result;
+    const isSafe = status === 'Safe';
+    const isSuspicious = status === 'Suspicious';
+    const type = isSafe ? 'safe' : (isSuspicious ? 'suspicious' : 'malicious');
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        const card = `
+    const card = `
       <article class="history-card ${type}">
         <div class="row">
           <span class="url" title="${url}">${url}</span>
-          <span class="badge ${type}">${data.result}</span>
+          <span class="badge ${type}">${status}</span>
         </div>
         <p class="subtitle">Quick Scan Result</p>
         <div class="meta">
@@ -128,6 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </article>
     `;
-        grid.insertAdjacentHTML('afterbegin', card);
-    }
+    grid.insertAdjacentHTML('afterbegin', card);
+  }
 });

@@ -1,6 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Phisheye About Page Loaded');
 
+    // Initialize Lucide Icons
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+    // --- Navigation Panel Logic ---
+    const backBtn = document.getElementById('backBtn');
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const navPanel = document.getElementById('navPanel');
+    const panelItems = document.querySelectorAll('.panel-item[data-tab]');
+
+    if (backBtn) {
+        backBtn.onclick = () => {
+            if (window.history.length > 1) window.history.back();
+            else window.location.href = '../Dashboard/dashboard.html';
+        };
+    }
+
+    userMenuBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navPanel.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (navPanel && !navPanel.contains(e.target) && userMenuBtn && !userMenuBtn.contains(e.target)) {
+            navPanel.classList.add('hidden');
+        }
+    });
+
+    // --- POPULATE USER INFO ---
+    const userEmail = localStorage.getItem('user_email');
+    if (userEmail) {
+        const initial = userEmail.charAt(0).toUpperCase();
+        const avatars = document.querySelectorAll('.user-avatar');
+        avatars.forEach(avatar => avatar.textContent = initial);
+
+        const panelName = document.querySelector('.panel-user-name');
+        const panelEmail = document.querySelector('.panel-user-email');
+        if (panelName) panelName.textContent = userEmail.split('@')[0];
+        if (panelEmail) panelEmail.textContent = userEmail;
+    }
+
+    panelItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const tab = item.getAttribute('data-tab');
+            if (tab === 'dashboard') window.location.href = '../Main_Dash/mainDash.html';
+            else if (tab === 'history') window.location.href = '../History/history.html';
+            else if (tab === 'settings') window.location.href = '../setting/settings.html';
+            else if (tab === 'quickscan') window.location.href = '../QuickScan/quickscan.html';
+            else if (tab === 'about') navPanel.classList.add('hidden');
+        });
+    });
+
+    // Logout
+    document.querySelector('.logout')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('token');
+            window.location.href = '../login-page/login.html';
+        }
+    });
+
     // --- 3D CUBE INTERACTION ---
     const cube = document.querySelector('.cube');
     const scene = document.querySelector('.scene');
@@ -47,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Lead Frontend Dev",
             bio: "Mahek is passionate about creating intuitive and secure user interfaces. He ensures that security doesn't come at the cost of usability.",
             email: "mahekkilledar@gmail.com",
-            photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
+            photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mahek&style=circle&backgroundColor=b6e3f4",
             socials: [
                 { platform: "LinkedIn", url: "https://www.linkedin.com/in/mahek-killedar-b35654276/", iconClass: "fa-brands fa-linkedin-in" },
                 { platform: "Github", url: "https://github.com/", iconClass: "fa-brands fa-github" }
@@ -58,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Full Stack Engineer",
             bio: "Pratiksha architects the scalable infrastructure behind Phisheye. She loves optimizing database queries and API response times.",
             email: "pratikshapatil@gmail.com",
-            photo: "../image/image.png",
+            photo: "https://media.licdn.com/dms/image/v2/D5603AQG-pkQOhsNobA/profile-displayphoto-shrink_200_200/B56ZS7hCaYHwAY-/0/1738312789114?e=1774483200&v=beta&t=75vFaAMbd9x1NF3OfSsxYUJv293WT78q96Y5O1nulXw",
             socials: [
                 { platform: "LinkedIn", url: "https://www.linkedin.com/in/pratiksha-patil-190205300/", iconClass: "fa-brands fa-linkedin-in" },
                 { platform: "Github", url: "https://github.com/", iconClass: "fa-brands fa-github" }

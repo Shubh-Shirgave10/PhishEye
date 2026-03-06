@@ -5,7 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PhishEye Dashboard</title>
-  <link rel="stylesheet" href="mainDash.css">
+  <link rel="stylesheet" href="../History/history.css">
+  <link rel="stylesheet" href="../navbar.css">
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Lucide Icons -->
@@ -19,6 +22,11 @@
     <!-- Top Navigation Bar -->
     <header class="top-bar">
       <div class="nav-left">
+        <!-- Back Button -->
+        <button id="backBtn" class="back-btn" title="Go Back">
+          <i data-lucide="arrow-left"></i>
+        </button>
+
         <!-- User Icon Trigger -->
         <button id="userMenuBtn" class="user-menu-btn">
           <div class="user-avatar">U</div>
@@ -71,6 +79,10 @@
           <i data-lucide="settings"></i>
           <span>Settings</span>
         </button>
+        <button class="panel-item" data-tab="about">
+          <i data-lucide="info"></i>
+          <span>About</span>
+        </button>
         <div class="panel-divider"></div>
         <button class="panel-item logout">
           <i data-lucide="log-out"></i>
@@ -79,89 +91,66 @@
       </nav>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Dashboard Content -->
-      <div id="dashboard-view" class="view-content active">
-        <div class="view-header">
-          <h1>Dashboard</h1>
+    <main class="page" id="dashboard-view">
+      <header class="hero" data-animate>
+        <div>
+          <p class="eyebrow">Real-Time Protection Status</p>
+          <h1>Current Scan Result</h1>
+          <p class="lead">Viewing the latest website scanned by the PhishEye Engine.</p>
         </div>
+      </header>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-          <!-- Total Scanned -->
-          <div class="stat-card">
-            <div class="stat-header">
-              <i data-lucide="shield" class="text-cyan"></i>
-              <span>Total Scanned</span>
+      <section class="top-cards" id="latestScanContainer" data-animate>
+        <!-- Latest Scan Injected Here -->
+        <p class="text-muted" style="margin-left: 20px;">Fetching latest scan...</p>
+      </section>
+
+      <!-- Analytics Section -->
+      <section class="middle" data-animate>
+        <div class="analytics-grid"
+          style="grid-template-columns: repeat(4, 1fr); grid-template-rows: auto; width: 100%; max-width: 100%; grid-column: 1 / -1;">
+          <article class="analytics-card total">
+            <div class="icon-ring">
+              <span class="icon">🌐</span>
             </div>
-            <div class="stat-value">...</div>
-            <div class="stat-subtitle">Loading...</div>
-          </div>
-
-          <!-- Safe Sites -->
-          <div class="stat-card">
-            <div class="stat-header">
-              <i data-lucide="shield" class="text-green"></i>
-              <span>Safe Sites</span>
+            <div>
+              <p>Latest Website</p>
+              <strong id="stat-domain" style="font-size: 1rem; word-break: break-all;">-</strong>
             </div>
-            <div class="stat-value">...</div>
-            <div class="stat-subtitle">Loading...</div>
-          </div>
-
-          <!-- Suspicious -->
-          <div class="stat-card">
-            <div class="stat-header">
-              <i data-lucide="alert-triangle" class="text-yellow"></i>
-              <span>Suspicious</span>
+          </article>
+          <article class="analytics-card safe">
+            <div class="icon-ring">
+              <span class="icon">🛡️</span>
             </div>
-            <div class="stat-value">...</div>
-            <div class="stat-subtitle">Loading...</div>
-          </div>
-
-          <!-- Malicious Blocked -->
-          <div class="stat-card">
-            <div class="stat-header">
-              <i data-lucide="bug" class="text-red"></i>
-              <span>Malicious Blocked</span>
+            <div>
+              <p>Safe %</p>
+              <strong id="stat-safe">0%</strong>
             </div>
-            <div class="stat-value">...</div>
-            <div class="stat-subtitle">Loading...</div>
-          </div>
+          </article>
+          <article class="analytics-card suspicious">
+            <div class="icon-ring">
+              <span class="icon">⚠️</span>
+            </div>
+            <div>
+              <p>Suspicious %</p>
+              <strong id="stat-susp">0%</strong>
+            </div>
+          </article>
+          <article class="analytics-card malicious">
+            <div class="icon-ring">
+              <span class="icon">🚫</span>
+            </div>
+            <div>
+              <p>Risk %</p>
+              <strong id="stat-malw">0%</strong>
+            </div>
+          </article>
         </div>
-
-        <!-- Chart Section -->
-        <div class="chart-section">
-          <h2>Detection Analysis</h2>
-          <div class="chart-container">
-            <canvas id="securityChart"></canvas>
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item text-green">Safe</div>
-            <div class="legend-item text-yellow">Suspicious</div>
-            <div class="legend-item text-red">Malware</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Placeholders for other views -->
-      <div id="history-view" class="view-content" style="display: none;">
-        <div class="view-header">
-          <h1>History</h1>
-        </div>
-        <p class="text-muted">History content goes here...</p>
-      </div>
-      <div id="settings-view" class="view-content" style="display: none;">
-        <div class="view-header">
-          <h1>Settings</h1>
-        </div>
-        <p class="text-muted">Settings content goes here...</p>
-      </div>
+      </section>
     </main>
-  </div>
 
 
-  <script src="mainDash.js"></script>
+    <script src="mainDash.js"></script>
 </body>
 
 </html>

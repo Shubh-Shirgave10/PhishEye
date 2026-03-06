@@ -5,15 +5,30 @@
   <meta charset="UTF-8" />
   <title>PhishEye</title>
   <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="../navbar.css" />
+  <link rel="stylesheet" href="../theme.css" />
+  <script src="../theme.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
   <canvas id="particles"></canvas>
 
-  <header class="nav">
-    <div class="logo">👁️ PhishEye</div>
-    <div id="authContainer">
-      <button id="loginBtn" class="login-btn">Login</button>
+  <!-- Top Navigation Bar (Shared Style) -->
+  <header class="top-bar">
+    <div class="nav-left">
+      <div class="logo-wrapper">
+        <div class="logo-icon">
+          <i data-lucide="eye"></i>
+        </div>
+        <span class="brand-name">PhishEye</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div id="authContainer">
+        <button id="loginBtn" class="login-btn">Login</button>
+      </div>
     </div>
   </header>
 

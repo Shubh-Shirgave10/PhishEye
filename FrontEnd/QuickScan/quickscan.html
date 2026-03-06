@@ -7,6 +7,10 @@
     <title>Quick Scan | PhishEye Protection</title>
     <link rel="stylesheet" href="../History/history.css" />
     <link rel="stylesheet" href="quickscan.css" />
+    <link rel="stylesheet" href="../navbar.css" />
+    <link rel="stylesheet" href="../theme.css" />
+    <script src="../theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
         rel="stylesheet" />
@@ -17,14 +21,26 @@
     <!-- Top Navigation Bar -->
     <header class="top-bar">
         <div class="nav-left">
+            <button id="backBtn" class="back-btn" title="Go Back">
+                <i data-lucide="arrow-left"></i>
+            </button>
+
             <button id="userMenuBtn" class="user-menu-btn">
                 <div class="user-avatar" id="userInitial">U</div>
             </button>
+
             <div class="logo-wrapper">
                 <div class="logo-icon">
                     <i data-lucide="eye"></i>
                 </div>
                 <span class="brand-name">PhishEye</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                <span>Live</span>
             </div>
         </div>
     </header>
@@ -41,14 +57,25 @@
             </div>
         </div>
         <nav class="panel-menu">
-            <button class="panel-item" data-tab="dashboard"><i
-                    data-lucide="bar-chart-3"></i><span>Dashboard</span></button>
-            <button class="panel-item active" data-tab="quickscan"><i data-lucide="scan"></i><span>Quick
-                    Scan</span></button>
-            <button class="panel-item" data-tab="history"><i data-lucide="clock"></i><span>History</span></button>
-            <button class="panel-item" data-tab="settings"><i data-lucide="settings"></i><span>Settings</span></button>
+            <button class="panel-item" data-tab="dashboard">
+                <i data-lucide="bar-chart-3"></i><span>Dashboard</span>
+            </button>
+            <button class="panel-item active" data-tab="quickscan">
+                <i data-lucide="scan"></i><span>Quick Scan</span>
+            </button>
+            <button class="panel-item" data-tab="history">
+                <i data-lucide="clock"></i><span>History</span>
+            </button>
+            <button class="panel-item" data-tab="settings">
+                <i data-lucide="settings"></i><span>Settings</span>
+            </button>
+            <button class="panel-item" data-tab="about">
+                <i data-lucide="info"></i><span>About</span>
+            </button>
             <div class="panel-divider"></div>
-            <button class="panel-item logout"><i data-lucide="log-out"></i><span>Logout</span></button>
+            <button class="panel-item logout">
+                <i data-lucide="log-out"></i><span>Logout</span>
+            </button>
         </nav>
     </div>
 

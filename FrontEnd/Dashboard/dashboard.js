@@ -261,24 +261,41 @@ if (startBtn) {
 
           .token-section {
             background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 20px; padding: 24px; margin-bottom: 32px; text-align: left;
+            border-radius: 16px; padding: 16px; margin-bottom: 24px; text-align: left;
           }
 
-          .token-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: block; }
+          .token-label { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
           
-          .token-row { display: flex; align-items: center; gap: 12px; }
+          .token-row { display: flex; align-items: center; gap: 8px; }
 
           .token-text {
-            font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; color: #38bdf8;
-            word-break: break-all; flex-grow: 1; padding: 12px; background: rgba(0, 0, 0, 0.2); border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 11px; color: #38bdf8;
+            word-break: break-all; flex-grow: 1; padding: 8px 10px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;
+            letter-spacing: 0.02em; cursor: pointer; transition: all 0.2s;
           }
+          .token-text:hover { background: rgba(0, 0, 0, 0.35); }
+          .token-text .token-dots { color: #64748b; margin: 0 2px; }
 
           .copy-btn {
-            background: #38bdf8; color: #020617; border: none; padding: 12px 20px; border-radius: 10px;
-            font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #38bdf8; color: #020617; border: none; padding: 8px 14px; border-radius: 8px;
+            font-weight: 700; font-size: 11px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
           }
           .copy-btn:hover { background: #7dd3fc; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+
+          .download-ext-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white; border: none; padding: 10px 20px; border-radius: 10px;
+            font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3); margin-left: 6px;
+            text-decoration: none;
+          }
+          .download-ext-btn:hover {
+            transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+          }
+          .download-ext-btn svg { width: 16px; height: 16px; }
 
           .modal-actions { display: flex; gap: 16px; margin-top: 8px; }
 
@@ -320,15 +337,20 @@ if (startBtn) {
                 <ul class="steps-list">
                     <li>Navigate to <code style="color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">chrome://extensions</code></li>
                     <li>Activate <b>Developer mode</b> (top right toggle)</li>
-                    <li>Click <b>Load unpacked</b> and select the extension folder</li>
-                    <li>Select the <b>Extension</b> folder from your workspace</li>
+                    <li>Download the extension folder:
+                        <a href="../PhishEye-Extension.zip" download="PhishEye-Extension.zip" class="download-ext-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Extension
+                        </a>
+                    </li>
+                    <li>Click <b>Load unpacked</b> and select the downloaded Extension folder</li>
                     <li>Launch the extension and authenticate using the token below:</li>
                 </ul>
 
                 <div class="token-section">
                     <span class="token-label">Secure Access Token</span>
                     <div class="token-row">
-                        <span class="token-text" id="tokenDisplay">${token}</span>
+                        <span class="token-text" id="tokenDisplay" title="Click to reveal full token">${token.length > 20 ? token.substring(0, 8) + '<span class="token-dots">••••••</span>' + token.substring(token.length - 8) : token}</span>
                         <button class="copy-btn" id="copyTokenBtn">COPY</button>
                     </div>
                 </div>
@@ -352,6 +374,20 @@ if (startBtn) {
 
     checkbox.onchange = () => {
       goToDashBtn.disabled = !checkbox.checked;
+    };
+
+    // Token reveal toggle
+    const tokenDisplay = document.getElementById('tokenDisplay');
+    let tokenRevealed = false;
+    tokenDisplay.onclick = () => {
+      tokenRevealed = !tokenRevealed;
+      if (tokenRevealed) {
+        tokenDisplay.textContent = token;
+        tokenDisplay.title = 'Click to hide token';
+      } else {
+        tokenDisplay.innerHTML = token.length > 20 ? token.substring(0, 8) + '<span class="token-dots">••••••</span>' + token.substring(token.length - 8) : token;
+        tokenDisplay.title = 'Click to reveal full token';
+      }
     };
 
     const copyBtn = document.getElementById('copyTokenBtn');

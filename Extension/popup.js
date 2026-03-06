@@ -59,11 +59,29 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.storage.local.get(['token'], (result) => {
         if (result.token && tabs[0].url) {
-          scanUrl(tabs[0].url, result.token);
+          const url = tabs[0].url;
+          const isWebUrl = url.startsWith('http://') || url.startsWith('https://');
+
+          if (!isWebUrl) {
+            showInternalStatus(url);
+            return;
+          }
+
+          scanUrl(url, result.token);
         }
       });
     });
   });
+
+  function showInternalStatus(url) {
+    scanStatus.style.display = 'block';
+    scanStatus.classList.remove('unsafe-mode');
+    scanStatus.classList.add('safe-mode');
+    statusIcon.textContent = '⚙️';
+    statusTitle.textContent = 'System Page';
+    statusDesc.textContent = 'This is an internal browser page and is safe.';
+    currentUrlSpan.textContent = url;
+  }
 
   function showAuth() {
     authSection.classList.remove('hidden');
@@ -79,10 +97,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0] && tabs[0].url) {
-        currentUrlSpan.textContent = tabs[0].url;
-        const isWebUrl = tabs[0].url.startsWith('http://') || tabs[0].url.startsWith('https://');
-        if (autoScan && isWebUrl) {
-          scanUrl(tabs[0].url, token);
+        const url = tabs[0].url;
+        currentUrlSpan.textContent = url;
+        const isWebUrl = url.startsWith('http://') || url.startsWith('https://');
+
+        if (!isWebUrl) {
+          showInternalStatus(url);
+          return;
+        }
+
+        if (autoScan) {
+          scanUrl(url, token);
         }
       }
     });
@@ -103,24 +128,71 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify({ url: url })
     })
-      .then(response => response.json())
+      .then(async (response) => {
+        // Always try to parse JSON; if the server returns non-JSON, show a helpful message
+        const contentType = response.headers.get('content-type') || '';
+        let payload = null;
+        if (contentType.includes('application/json')) {
+          payload = await response.json();
+        } else {
+          const text = await response.text();
+          throw new Error(`Non-JSON response (${response.status}): ${text.slice(0, 200)}`);
+        }
+
+        if (!response.ok) {
+          const msg = payload?.message || `Server error (${response.status})`;
+          const details = payload?.details?.error ? `: ${payload.details.error}` : '';
+          throw new Error(msg + details);
+        }
+
+        return payload;
+      })
       .then(data => {
-        if (data.result === 'Safe') {
+        console.log("Scan API Response:", data);
+
+        const statusRaw =
+          data.status ||
+          data.result ||
+          data.verdict ||
+          data.label ||
+          data.prediction ||
+          "unknown";
+
+        const status = statusRaw.toLowerCase();
+
+        // Also trigger the on-screen toast for manual scans
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0] && tabs[0].id) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: "SHOW_POPUP", status: status });
+          }
+        });
+
+        if (status === "safe") {
           scanStatus.classList.add('safe-mode');
           statusIcon.textContent = '🛡️';
           statusTitle.textContent = 'Website Secure';
           statusDesc.textContent = 'No malicious threats detected by PhishEye AI.';
-        } else {
+        } else if (status === "suspicious") {
           scanStatus.classList.add('unsafe-mode');
           statusIcon.textContent = '⚠️';
+          statusTitle.textContent = 'Suspicious Activity';
+          statusDesc.textContent = 'This site shows suspicious signs. Proceed carefully.';
+        } else if (status === "malicious" || status === "phishing") {
+          scanStatus.classList.add('unsafe-mode');
+          statusIcon.textContent = '🚨';
           statusTitle.textContent = 'Threat Detected';
           statusDesc.textContent = 'This site shows patterns of phishing behavior.';
+        } else {
+          scanStatus.classList.add('unsafe-mode');
+          statusIcon.textContent = '❓';
+          statusTitle.textContent = 'Unknown Result';
+          statusDesc.textContent = 'Backend did not return a recognizable verdict.';
         }
       })
       .catch(error => {
         statusIcon.textContent = '❌';
         statusTitle.textContent = 'Scan Failed';
-        statusDesc.textContent = 'Could not reach PhishEye cloud engine.';
+        statusDesc.textContent = error?.message || 'Could not reach PhishEye cloud engine.';
         console.error(error);
       });
   }

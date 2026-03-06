@@ -6,9 +6,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Settings • PhishEye</title>
   <link rel="stylesheet" href="settings.css" />
+  <link rel="stylesheet" href="../navbar.css" />
+  <link rel="stylesheet" href="../theme.css" />
+  <script src="../theme.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -18,29 +22,38 @@
 
   <!-- Top Navigation Bar -->
   <header class="top-bar">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <!-- User Icon Trigger -->
+    <div class="nav-left">
+      <button id="backBtn" class="back-btn" title="Go Back">
+        <i data-lucide="arrow-left"></i>
+      </button>
+
       <button id="userMenuBtn" class="user-menu-btn">
         <div class="user-avatar">U</div>
       </button>
-      <!-- Logo -->
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div
-          style="width: 2rem; height: 2rem; background: linear-gradient(135deg, #06b6d4, #22d3ee); border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);">
-          👁️</div>
-        <span
-          style="font-size: 1.25rem; font-weight: 700; background: linear-gradient(135deg, #22d3ee, #06d4b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">PhishEye</span>
+
+      <div class="logo-wrapper">
+        <div class="logo-icon">
+          <i data-lucide="eye"></i>
+        </div>
+        <span class="brand-name">PhishEye</span>
       </div>
     </div>
-    <div style="display: flex; align-items: center;">
+
+    <div class="header-right">
+      <div class="status-badge">
+        <div class="pulse-dot"></div>
+        <span>Live</span>
+      </div>
     </div>
   </header>
 
-  <!-- Navigation Panel (Popup) -->
+  <!-- Navigation Panel (Hidden by default) -->
   <div id="navPanel" class="nav-panel hidden">
     <div class="panel-header">
       <div class="panel-user-info">
-        <div class="panel-user-avatar"><i data-lucide="user"></i></div>
+        <div class="panel-user-avatar">
+          <i data-lucide="user"></i>
+        </div>
         <div>
           <span class="panel-user-name">User</span>
           <span class="panel-user-email">user@example.com</span>
@@ -48,12 +61,31 @@
       </div>
     </div>
     <nav class="panel-menu">
-      <button class="panel-item" data-tab="dashboard"><i data-lucide="bar-chart-3"></i><span>Dashboard</span></button>
-      <button class="panel-item" data-tab="quickscan"><i data-lucide="scan"></i><span>Quick Scan</span></button>
-      <button class="panel-item" data-tab="history"><i data-lucide="clock"></i><span>History</span></button>
-      <button class="panel-item active" data-tab="settings"><i data-lucide="settings"></i><span>Settings</span></button>
+      <button class="panel-item" data-tab="dashboard">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="panel-item" data-tab="quickscan">
+        <i data-lucide="scan"></i>
+        <span>Quick Scan</span>
+      </button>
+      <button class="panel-item" data-tab="history">
+        <i data-lucide="clock"></i>
+        <span>History</span>
+      </button>
+      <button class="panel-item active" data-tab="settings">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </button>
+      <button class="panel-item" data-tab="about">
+        <i data-lucide="info"></i>
+        <span>About</span>
+      </button>
       <div class="panel-divider"></div>
-      <button class="panel-item logout"><i data-lucide="log-out"></i><span>Logout</span></button>
+      <button class="panel-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Logout</span>
+      </button>
     </nav>
   </div>
 
@@ -71,7 +103,6 @@
         <button class="nav-btn" data-target="privacy"><i data-lucide="lock"></i><span>Privacy &amp; Data</span></button>
         <button class="nav-btn" data-target="notifications"><i
             data-lucide="bell"></i><span>Notifications</span></button>
-        <button class="nav-btn" data-target="about"><i data-lucide="info"></i><span>About</span></button>
       </nav>
     </aside>
 
@@ -240,17 +271,17 @@
         </div>
       </section>
 
-      <!-- About -->
-      <section id="about" class="settings-section">
-        <div class="section-header">
-          <h3>About PhishEye</h3>
-          <p>Learn more about the project without leaving Settings</p>
-        </div>
-        <div class="card about-card">
-          <iframe id="aboutFrame" class="about-frame" title="About PhishEye" loading="lazy"
-            data-src="../about/about.html" src="about:blank"></iframe>
-        </div>
-      </section>
+
+      <!-- Global Actions -->
+      <div class="global-actions"
+        style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end; padding-bottom: 2rem;">
+        <button id="resetDefaults" class="btn"
+          style="background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">Reset
+          Defaults</button>
+        <button id="saveSettings" class="btn"
+          style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);">Save
+          Settings</button>
+      </div>
     </main>
   </div>
 
