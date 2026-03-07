@@ -110,19 +110,68 @@ def create_app():
 
             return jsonify({"history": history_data}), 200
 
+        # --- CLEAN URL ROUTES ---
+        @app.route('/login')
+        def login_pretty():
+            return app.send_static_file('login-page/login.html')
+
+        @app.route('/dashboard')
+        @app.route('/main')
+        def dashboard_pretty():
+            return app.send_static_file('Main_Dash/mainDash.html')
+
+        @app.route('/home')
+        def home_pretty():
+            return app.send_static_file('Dashboard/dashboard.html')
+
+        @app.route('/quickscan')
+        def quickscan_pretty():
+            return app.send_static_file('QuickScan/quickscan.html')
+
+        @app.route('/history')
+        def history_pretty():
+            return app.send_static_file('History/history.html')
+
+        @app.route('/settings')
+        def settings_pretty():
+            return app.send_static_file('setting/settings.html')
+
+        @app.route('/about')
+        def about_pretty():
+            return app.send_static_file('about/about.html')
+
         # Fallback routes for frontend
         @app.route('/')
         def index():
-            # Redirect to the login page so relative asset paths resolve correctly
-            return redirect('/login-page/login.html')
-
-        @app.route('/FrontEnd/<path:path>')
-        def serve_frontend_alias(path):
-            return app.send_static_file(path)
+            # Redirect to the home landing page
+            return redirect('/home')
 
         @app.route('/<path:path>')
-        def serve_static(path):
-            # This handles requests without /FrontEnd/ prefix
-            return app.send_static_file(path)
+        def serve_static_clean(path):
+            # Check if file exists without .html
+            if not path.endswith('.html') and '.' not in path:
+                # Try serving from various directories
+                potential_files = [
+                    f"{path}.html",
+                    f"login-page/{path}.html",
+                    f"Main_Dash/{path}.html",
+                    f"Dashboard/{path}.html",
+                    f"History/{path}.html",
+                    f"QuickScan/{path}.html",
+                    f"setting/{path}.html",
+                    f"about/{path}.html"
+                ]
+                for p in potential_files:
+                    try:
+                        return app.send_static_file(p)
+                    except:
+                        continue
+            
+            # Normal static file serving
+            try:
+                return app.send_static_file(path)
+            except:
+                # If all else fails, serve home
+                return redirect('/home')
 
     return app

@@ -370,3 +370,16 @@ function injectWarningStyles() {
     `;
     document.head.appendChild(style);
 }
+
+// Proactively ask background if this page already has a scan result cached
+chrome.runtime.sendMessage({ action: "GET_SCAN_STATUS" }).then(response => {
+    if (response && response.status) {
+        // Trigger UI if status exists
+        const status = String(response.status).toLowerCase();
+        if (status === "suspicious") {
+            showSuspiciousWarning();
+        } else {
+            showToast(status);
+        }
+    }
+}).catch(() => { });

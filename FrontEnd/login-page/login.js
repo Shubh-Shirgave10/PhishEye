@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Redirect if already logged in
     const token = localStorage.getItem('token');
     if (token) {
-        window.location.href = '../Main_Dash/mainDash.html';
+        window.location.href = '/dashboard';
         return;
     }
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user_id', data.user_id);
                 localStorage.setItem('user_email', email);
-                window.location.href = '../Dashboard/dashboard.html';
+                window.location.href = '/dashboard';
 
             } catch (error) {
                 alert(error.message);

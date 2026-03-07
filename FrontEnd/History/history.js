@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- AUTH GUARD ---
   const token = localStorage.getItem('token');
   if (!token) {
-    window.location.href = '../login-page/login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (backBtn) {
     backBtn.onclick = () => {
       if (window.history.length > 1) window.history.back();
-      else window.location.href = '../Dashboard/dashboard.html';
+      else window.location.href = '/dashboard';
     };
   }
 
@@ -60,16 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetTab = item.getAttribute('data-tab');
 
       if (targetTab === 'dashboard') {
-        window.location.href = '../Main_Dash/mainDash.html';
+        window.location.href = '/dashboard';
       } else if (targetTab === 'history') {
         // Already on history page, just close panel
         navPanel.classList.add('hidden');
       } else if (targetTab === 'settings') {
-        window.location.href = '../setting/settings.html';
+        window.location.href = '/settings';
       } else if (targetTab === 'quickscan') {
-        window.location.href = '../QuickScan/quickscan.html';
+        window.location.href = '/quickscan';
       } else if (targetTab === 'about') {
-        window.location.href = '../about/about.html';
+        window.location.href = '/about';
       }
     });
   });
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       if (confirm('Are you sure you want to logout?')) {
-        window.location.href = '../login-page/login.html';
+        window.location.href = '/login';
       }
     });
   }

@@ -140,25 +140,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Special handling for history tab - redirect to history page
       if (targetTab === 'history') {
-        window.location.href = '../History/history.html';
+        window.location.href = '/history';
         return;
       }
 
       // Special handling for settings tab - redirect to settings page
       if (targetTab === 'settings') {
-        window.location.href = '../setting/settings.html';
+        window.location.href = '/settings';
         return;
       }
 
       // Special handling for quick scan - redirect to quick scan page
       if (targetTab === 'quickscan') {
-        window.location.href = '../QuickScan/quickscan.html';
+        window.location.href = '/quickscan';
         return;
       }
 
       // Special handling for about - redirect to about page
       if (targetTab === 'about') {
-        window.location.href = '../about/about.html';
+        window.location.href = '/about';
         return;
       }
 
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirm('Are you sure you want to logout?')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user_id');
-        window.location.href = '../login-page/login.html';
+        window.location.href = '/login';
       }
     });
   }

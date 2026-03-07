@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const userEmail = localStorage.getItem('user_email');
 
   if (!token) {
-    window.location.href = '../login-page/login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (backBtn) {
     backBtn.onclick = () => {
       if (window.history.length > 1) window.history.back();
-      else window.location.href = '../Dashboard/dashboard.html';
+      else window.location.href = '/dashboard';
     };
   }
 
@@ -46,10 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
   panelItems.forEach(item => {
     item.addEventListener('click', () => {
       const tab = item.getAttribute('data-tab');
-      if (tab === 'dashboard') window.location.href = '../Main_Dash/mainDash.html';
-      else if (tab === 'history') window.location.href = '../History/history.html';
-      else if (tab === 'settings') window.location.href = '../setting/settings.html';
-      else if (tab === 'about') window.location.href = '../about/about.html';
+      if (tab === 'dashboard') window.location.href = '/dashboard';
+      else if (tab === 'history') window.location.href = '/history';
+      else if (tab === 'settings') window.location.href = '/settings';
+      else if (tab === 'about') window.location.href = '/about';
       else if (tab === 'quickscan') navPanel.classList.add('hidden');
     });
   });
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Logout
   document.querySelector('.logout')?.addEventListener('click', () => {
     localStorage.clear();
-    window.location.href = '../login-page/login.html';
+    window.location.href = '/login';
   });
 
   // --- SCAN LOGIC ---

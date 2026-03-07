@@ -1,3 +1,4 @@
+importScripts('config_ext.js');
 const scanCache = {}; // Stores { url, status } per tabId
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -17,10 +18,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         return;
     }
 
-    chrome.storage.local.get(["token"], (result) => {
+    chrome.storage.local.get(["token", "autoScan"], (result) => {
         const token = result.token;
+        const autoScan = result.autoScan !== undefined ? result.autoScan : false;
 
-        if (!token) return;
+        if (!token || !autoScan) return;
 
         // Skip if we already scanned this exact URL for this tab
         if (scanCache[tabId] && scanCache[tabId].url === tab.url && scanCache[tabId].status !== "scanning...") {
@@ -41,7 +43,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             return;
         }
 
-        fetch("http://localhost:5000/api/scan", {
+        const API_BASE = self.EXTENSION_CONFIG ? self.EXTENSION_CONFIG.API_BASE : 'http://localhost:5000';
+        fetch(`${API_BASE}/api/scan`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -137,4 +140,20 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 // Clear cache when tab is closed
 chrome.tabs.onRemoved.addListener((tabId) => {
     delete scanCache[tabId];
+});
+
+// Handle proactive status checks from content scripts
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "GET_SCAN_STATUS" && sender.tab) {
+        const tabId = sender.tab.id;
+        if (scanCache[tabId] && scanCache[tabId].url === sender.tab.url) {
+            const status = scanCache[tabId].status;
+            if (status !== "scanning...") {
+                sendResponse({ status: status });
+                // Also trigger the UI
+                chrome.tabs.sendMessage(tabId, { action: "SHOW_POPUP", status: status }).catch(() => { });
+            }
+        }
+    }
+    return true; // Keep channel open for async
 });

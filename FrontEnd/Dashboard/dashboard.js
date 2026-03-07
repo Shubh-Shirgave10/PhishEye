@@ -169,8 +169,15 @@ function updateHeader() {
       </div>
     `;
     document.getElementById('userProfile').onclick = () => {
-      window.location.href = "../Main_Dash/mainDash.html";
+      window.location.href = "/dashboard";
     };
+  } else if (authContainer) {
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+      loginBtn.onclick = () => {
+        window.location.href = "/login";
+      };
+    }
   }
 }
 updateHeader();
@@ -181,7 +188,7 @@ if (startBtn) {
   startBtn.addEventListener("click", () => {
     if (!token) {
       // User not logged in (Login button is visible) -> redirect to login page
-      window.location.href = "../login-page/login.html";
+      window.location.href = "/login";
       return;
     }
 
@@ -404,7 +411,7 @@ if (startBtn) {
     };
 
     goToDashBtn.onclick = () => {
-      window.location.href = "../Main_Dash/mainDash.html";
+      window.location.href = "/dashboard";
     };
 
     document.getElementById('closeModalBtn').onclick = () => modal.remove();
