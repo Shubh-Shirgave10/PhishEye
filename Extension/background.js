@@ -1,5 +1,21 @@
 importScripts('config_ext.js');
+
 const scanCache = {}; // Stores { url, status } per tabId
+
+/**
+ * Utility to fetch with retry to handle Render's cold start (can take 30s-60s).
+ */
+async function fetchWithRetry(url, options, retries = 3, delay = 5000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await fetch(url, options);
+        } catch (err) {
+            if (i === retries - 1) throw err;
+            console.log(`⚠️ Fetch failed, retrying in ${delay / 1000}s... (${i + 1}/${retries})`);
+            await new Promise(res => setTimeout(res, delay));
+        }
+    }
+}
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // In PhishEye, we want to scan all protocols to provide consistent feedback
@@ -43,15 +59,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             return;
         }
 
-        const API_BASE = self.EXTENSION_CONFIG ? self.EXTENSION_CONFIG.API_BASE : 'http://localhost:5000';
-        fetch(`${API_BASE}/api/scan`, {
+        const API_BASE = (self.EXTENSION_CONFIG && self.EXTENSION_CONFIG.API_BASE)
+            ? self.EXTENSION_CONFIG.API_BASE
+            : 'https://phisheye-2-dbpr.onrender.com';
+
+        const scanUrl = `${API_BASE}/api/scan`;
+        console.log(`🌐 PhishEye: Scanning ${tab.url} via ${scanUrl}`);
+
+        fetchWithRetry(scanUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + token,
             },
             body: JSON.stringify({ url: tab.url }),
-        })
+        }, 5, 4000) // Retry up to 5 times with 4s delay to wait for Render
             .then(async (response) => {
                 const contentType = response.headers.get("content-type") || "";
 
