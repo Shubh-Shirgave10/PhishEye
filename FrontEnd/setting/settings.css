@@ -681,4 +681,19 @@ input:checked+.slider:before {
   .sidebar-header {
     display: none;
   }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .save-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .save-actions .btn {
+    width: 100%;
+  }
 }

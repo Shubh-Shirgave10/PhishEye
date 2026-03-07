@@ -784,25 +784,24 @@ body {
 
   .middle {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    /* Left = fixed chart area, right = flexible */
+    grid-template-columns: 1fr;
     gap: 24px;
-    align-items: stretch;
-    /* right grid ko chart ke height ke equal stretch karega */
+  }
+
+  .analytics-bottom {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
-  .top-cards {
+
+  .top-cards,
+  .analytics-grid {
     grid-template-columns: 1fr;
   }
 
   .history-card {
     padding: 22px;
-  }
-
-  .analytics-bottom {
-    grid-template-columns: 1fr;
   }
 
   .timeline-column {
