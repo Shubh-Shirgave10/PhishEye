@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       chrome.storage.local.set({ token: token, autoScan: false }, () => {
         showMain(token, false);
-        fetch('http://localhost:5000/api/extension/link', {
+        const API_BASE = window.EXTENSION_CONFIG ? window.EXTENSION_CONFIG.API_BASE : 'http://localhost:5000';
+        fetch(`${API_BASE}/api/extension/link`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -120,7 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
     statusTitle.textContent = 'Analyzing Site...';
     statusDesc.textContent = 'Checking threat signatures and AI patterns';
 
-    fetch('http://localhost:5000/api/scan', {
+    const API_BASE = window.EXTENSION_CONFIG ? window.EXTENSION_CONFIG.API_BASE : 'http://localhost:5000';
+    fetch(`${API_BASE}/api/scan`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
