@@ -149,10 +149,9 @@ def create_app():
         @app.route('/<path:path>')
         def serve_static_clean(path):
             # 1. Try serving exactly as requested
-            try:
+            full_path = os.path.join(app.static_folder, path)
+            if os.path.isfile(full_path):
                 return app.send_static_file(path)
-            except:
-                pass
 
             # 2. If it's a page (no extension), try .html in subdirectories
             if '.' not in path:
@@ -167,21 +166,22 @@ def create_app():
                     f"about/{path}.html"
                 ]
                 for p in potential_html:
-                    try:
+                    if os.path.isfile(os.path.join(app.static_folder, p)):
                         return app.send_static_file(p)
-                    except:
-                        continue
 
             # 3. If it's a resource (CSS, JS, etc.) from the root, try finding it in subdirectories
             # This handles relative links like <link href="login.css"> when at /login
             sub_dirs = ['login-page', 'Main_Dash', 'Dashboard', 'History', 'QuickScan', 'setting', 'about']
             for sd in sub_dirs:
-                try:
-                    return app.send_static_file(f"{sd}/{path}")
-                except:
-                    continue
+                potential_resource = f"{sd}/{path}"
+                if os.path.isfile(os.path.join(app.static_folder, potential_resource)):
+                    return app.send_static_file(potential_resource)
             
-            # 4. Fallback to index
+            # 4. If it's a known extension but not found, don't redirect (avoid sending HTML instead of CSS)
+            if path.endswith(('.css', '.js', '.png', '.jpg', '.jpeg', '.svg', '.gif', '.ico')):
+                return jsonify({"error": "Resource not found"}), 404
+
+            # 5. Fallback for navigation
             return redirect('/home')
 
     return app
