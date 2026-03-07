@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ---------------------- TWILIO OTP LOGIC ---------------------- */
-    const API_BASE = 'http://localhost:5000';
+    const API_BASE = (window.CONFIG && window.CONFIG.API_BASE) ? window.CONFIG.API_BASE : '';
     const sendOtpBtn = document.getElementById('sendOtpBtn');
     const verifyOtpBtn = document.getElementById('verifyOtpBtn');
     const otpSection = document.getElementById('otpSection');

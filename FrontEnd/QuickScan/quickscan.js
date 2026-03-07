@@ -78,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    fetch('http://localhost:5000/api/scan', {
+    const API_BASE = (window.CONFIG && window.CONFIG.API_BASE) ? window.CONFIG.API_BASE : '';
+    fetch(`${API_BASE}/api/scan`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

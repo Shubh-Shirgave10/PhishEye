@@ -122,8 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch and Populate History Data
   function loadHistory() {
+    const API_BASE = (window.CONFIG && window.CONFIG.API_BASE) ? window.CONFIG.API_BASE : '';
     if (token) {
-      fetch('http://localhost:5000/api/history', {
+      fetch(`${API_BASE}/api/history`, {
         headers: { 'Authorization': 'Bearer ' + token }
       })
         .then(response => response.json())
