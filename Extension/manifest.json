@@ -11,6 +11,7 @@
     ],
     "host_permissions": [
         "http://localhost:5000/*",
+        "https://phisheye-2-dbpr.onrender.com/*",
         "<all_urls>"
     ],
     "background": {
