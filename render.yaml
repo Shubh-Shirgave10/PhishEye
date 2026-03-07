@@ -3,7 +3,7 @@ services:
     name: phisheye-backend
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn --chdir BackEnd run:app"
+    startCommand: "gunicorn --chdir BackEnd --bind 0.0.0.0:$PORT run:app"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
