@@ -148,10 +148,15 @@ def create_app():
 
         @app.route('/<path:path>')
         def serve_static_clean(path):
-            # Check if file exists without .html
-            if not path.endswith('.html') and '.' not in path:
-                # Try serving from various directories
-                potential_files = [
+            # 1. Try serving exactly as requested
+            try:
+                return app.send_static_file(path)
+            except:
+                pass
+
+            # 2. If it's a page (no extension), try .html in subdirectories
+            if '.' not in path:
+                potential_html = [
                     f"{path}.html",
                     f"login-page/{path}.html",
                     f"Main_Dash/{path}.html",
@@ -161,17 +166,22 @@ def create_app():
                     f"setting/{path}.html",
                     f"about/{path}.html"
                 ]
-                for p in potential_files:
+                for p in potential_html:
                     try:
                         return app.send_static_file(p)
                     except:
                         continue
+
+            # 3. If it's a resource (CSS, JS, etc.) from the root, try finding it in subdirectories
+            # This handles relative links like <link href="login.css"> when at /login
+            sub_dirs = ['login-page', 'Main_Dash', 'Dashboard', 'History', 'QuickScan', 'setting', 'about']
+            for sd in sub_dirs:
+                try:
+                    return app.send_static_file(f"{sd}/{path}")
+                except:
+                    continue
             
-            # Normal static file serving
-            try:
-                return app.send_static_file(path)
-            except:
-                # If all else fails, serve home
-                return redirect('/home')
+            # 4. Fallback to index
+            return redirect('/home')
 
     return app
