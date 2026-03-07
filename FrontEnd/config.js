@@ -1,5 +1,8 @@
 const CONFIG = {
-    // API_BASE: 'http://localhost:5000',
-    API_BASE: 'https://phisheye-2-dbpr.onrender.com' // Replace with your actual Render URL
+    // When served from the same domain (like on Render), use empty string for relative paths.
+    // This avoids CORS issues and "Failed to fetch" errors.
+    API_BASE: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : ''
 };
 window.CONFIG = CONFIG;
