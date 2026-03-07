@@ -15,6 +15,7 @@ pyopenssl
 cryptography
 psycopg2-binary
 twilio
+gunicorn
 
 # Machine Learning Requirements
 pandas

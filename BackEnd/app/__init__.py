@@ -28,7 +28,12 @@ def create_app():
     # This avoids surprises with relative paths and keeps the DB writable on Windows.
     os.makedirs(app.instance_path, exist_ok=True)
     default_db_path = os.path.join(app.instance_path, 'phisheye.db')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL') or f"sqlite:///{default_db_path}"
+    
+    db_url = os.getenv('DATABASE_URL')
+    if db_url and db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+        
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url or f"sqlite:///{default_db_path}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'phish-eye-secret-key')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=7)
