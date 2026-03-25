@@ -17,3 +17,9 @@ Thumbs.db
 # IDEs
 .vscode/
 .idea/
+
+# Custom
+.env
+*.db
+/BackEnd/.env
+/BackEnd/instance/
