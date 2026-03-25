@@ -1,0 +1,19 @@
+2026-02-11 13:25:07,531 - INFO - User: shubhamshirgave9@gmail.com | Event: LOGIN_ATTEMPT | Status: FAILED | Details: Invalid credentials
+2026-02-11 13:26:32,985 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 10:42:24,470 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 10:43:32,760 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 10:44:16,891 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 12:07:50,074 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 12:14:07,047 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 15:03:28,105 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 15:50:36,898 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-05 19:51:11,202 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 10:39:20,986 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 10:43:17,584 - INFO - User: prishsaa2308@gmail.com | Event: LOGIN_ATTEMPT | Status: FAILED | Details: Invalid credentials
+2026-03-06 10:43:27,330 - INFO - User: prishsaa2308@gmail.com | Event: LOGIN_ATTEMPT | Status: FAILED | Details: Invalid credentials
+2026-03-06 10:47:20,903 - INFO - User: 2 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 11:27:47,444 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 12:26:48,522 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 13:48:19,434 - INFO - User: yashnaik459@gmail.com | Event: LOGIN_ATTEMPT | Status: FAILED | Details: Invalid credentials
+2026-03-06 13:48:29,686 - INFO - User: 4 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-03-06 13:59:25,088 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None

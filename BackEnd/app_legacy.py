@@ -1,16 +1,20 @@
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, send_from_directory, redirect
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
-import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+# Determine the absolute path to the FrontEnd directory
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'FrontEnd'))
+
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 CORS(app)
 
 # Configuration from environment variables
@@ -161,6 +165,14 @@ def get_history():
         })
         
     return jsonify({'history': history_data}), 200
+
+@app.route('/')
+def index():
+    return redirect('/login-page/login.html')
+
+@app.route('/FrontEnd/<path:path>')
+def serve_frontend_alias(path):
+    return send_from_directory(app.static_folder, path)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

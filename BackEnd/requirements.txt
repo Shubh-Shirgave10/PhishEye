@@ -1,10 +1,8 @@
 flask
 flask-cors
-flask-sqlalchemy
 flask-jwt_extended
 flask-limiter
 flask-marshmallow
-marshmallow-sqlalchemy
 flask-talisman
 python-dotenv
 requests
@@ -12,5 +10,4 @@ python-whois
 pyotp
 pyopenssl
 cryptography
-psycopg2-binary
 twilio
