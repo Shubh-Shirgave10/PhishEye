@@ -112,6 +112,10 @@ def create_app():
         def serve_frontend_alias(path):
             return app.send_static_file(path)
 
+        @app.route('/favicon.ico')
+        def favicon():
+            return app.send_static_file('favicon.ico')
+
         @app.route('/<path:path>')
         def serve_static(path):
             return app.send_static_file(path)
