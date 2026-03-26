@@ -114,12 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * Send OTP via Twilio backend
      */
     async function sendOtpToPhone(phone) {
-        const res = await fetch(`${API_BASE}/api/otp/send`, {
+        return fetch(`${API_BASE}/api/otp/send`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ phone })
         });
-        return res.json();
     }
 
     /**
