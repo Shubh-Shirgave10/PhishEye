@@ -156,9 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
             otpStatus.textContent = "";
 
             try {
-                const result = await sendOtpToPhone(phone);
+                const response = await sendOtpToPhone(phone);
+                const result = await response.json();
                 otpSection.hidden = false;
-                if (result.message === 'OTP sent successfully') {
+                if (response.ok) {
                     otpStatus.textContent = `OTP sent to ${phone}`;
                     otpStatus.style.color = "var(--success)";
                     signupVerifiedPhone = phone;
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 otpSection.hidden = false;
-                otpStatus.textContent = "Network error. Please try again.";
+                otpStatus.textContent = "Network error or Server Crash. Check logs.";
                 otpStatus.style.color = "var(--error)";
             } finally {
                 sendOtpBtn.textContent = "Resend OTP";
@@ -202,13 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     otpInput.disabled = true;
                     verifyOtpBtn.textContent = "Verified";
                 } else {
-                    otpStatus.textContent = data.message || "Invalid OTP";
+                    otpStatus.textContent = data.message || data.error || "Invalid OTP";
                     otpStatus.style.color = "var(--error)";
                     verifyOtpBtn.textContent = "Verify";
                     verifyOtpBtn.disabled = false;
                 }
             } catch (err) {
-                otpStatus.textContent = "Network error. Please try again.";
+                otpStatus.textContent = "Error verifying OTP. Check logs.";
                 otpStatus.style.color = "var(--error)";
                 verifyOtpBtn.textContent = "Verify";
                 verifyOtpBtn.disabled = false;
@@ -295,14 +296,18 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = "Registering...";
             submitBtn.disabled = true;
 
-            const email = signupForm.querySelector('input[name="email"]').value;
-
             try {
+                const email = signupForm.querySelector('input[name="email"]').value.trim().toLowerCase();
+                const fullName = signupForm.querySelector('input[name="fullName"]').value;
+                const password = signupForm.querySelector('input[placeholder="Enter strong password"]').value;
+
                 const response = await fetch(`${API_BASE}/api/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, phone: signupVerifiedPhone })
+                    body: JSON.stringify({ email, password, phone: signupVerifiedPhone, fullName })
                 });
+
+                const data = await response.json();
 
                 if (response.status === 201) {
                     alert("Registration Successful! Please Login.");
@@ -311,13 +316,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     signupVerifiedPhone = '';
                     otpSection.hidden = true;
                     switchTab('login');
-                } else if (response.status === 409) {
-                    throw new Error('User already exists');
                 } else {
-                    throw new Error('Registration failed');
+                    throw new Error(data.message || data.error || 'Registration failed');
                 }
             } catch (error) {
-                alert(error.message);
+                alert(`Error: ${error.message}`);
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
