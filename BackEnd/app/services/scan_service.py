@@ -114,7 +114,7 @@ class ScanService:
         # Database Check for known phishing URLs
         try:
             from ..models.scan import Scan
-            existing_scan = Scan.query.filter_by(url=url, result="Malicious").first()
+            existing_scan = Scan.objects(url=url, result="Malicious").first()
             if existing_scan:
                 results["status"] = "Malicious"
                 results["risk_score"] = 100
@@ -174,12 +174,13 @@ class ScanService:
              results["risk_score"] += 20
         
         # Final status determination
-        if results["risk_score"] >= 100: 
+        risk_score = int(results["risk_score"])
+        if risk_score >= 85: 
             results["status"] = "Malicious"
-            results["confidence"] = 0.9
-        elif results["risk_score"] >= 60: 
+            results["confidence"] = 0.92
+        elif risk_score >= 45: 
             results["status"] = "Suspicious"
-            results["confidence"] = 0.7
+            results["confidence"] = 0.75
         else:
             results["status"] = "Safe"
             results["confidence"] = 0.95
@@ -194,20 +195,20 @@ class ScanService:
         
         # IP as domain
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", domain):
-            score += 40
+            score += 50 # Increased from 40
             
         # Too many subdomains
-        if domain.count('.') > 4: # Increased from 3
-            score += 15
+        if domain.count('.') > 3: # Lowered from 4
+            score += 20
             
-        # Suspect keywords (Only extremely specific ones)
-        keywords = ['login-update', 'account-verification', 'secure-signin-verify']
+        # Suspect keywords (Broadened)
+        keywords = ['login', 'verify', 'account', 'update', 'secure', 'signin', 'banking', 'wallet', 'auth']
         for kw in keywords:
             if kw in url.lower():
-                score += 25
+                score += 15
                 
         # Length
-        if len(url) > 150: # Increased from 100
+        if len(url) > 80: # Lowered from 150
             score += 10
             
         return {"score": score}
