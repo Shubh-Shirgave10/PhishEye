@@ -151,27 +151,39 @@ class ScanService:
             print(f"ML Prediction failed: {e}")
             results["details"]["ml_analysis"] = {"error": str(e)}
         
-        # 1. Heuristic Engine
-        heuristics = ScanService.check_heuristics(url)
-        results["details"]["heuristics"] = heuristics
-        results["risk_score"] += heuristics["score"]
+        # -------------------------------
+        # Parallel Engine Modules
+        # -------------------------------
+        import concurrent.futures
         
-        # 2. Redirect Chain
-        redirects = ScanService.check_redirects(url)
-        results["details"]["redirects"] = redirects
-        results["risk_score"] += (redirects["count"] * 5)
-        
-        # 3. SSL Check
-        ssl_info = ScanService.check_ssl(url)
-        results["details"]["ssl"] = ssl_info
-        if not ssl_info["valid"] and ssl_info.get("reason") == "No HTTPS":
-            results["risk_score"] += 20
-        
-        # 4. Domain Age
-        domain_info = ScanService.check_domain_age(url)
-        results["details"]["domain"] = domain_info
-        if domain_info["age_days"] < 30: 
-             results["risk_score"] += 20
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            # Kick off all external checks in parallel
+            future_heuristics = executor.submit(ScanService.check_heuristics, url)
+            future_redirects = executor.submit(ScanService.check_redirects, url)
+            future_ssl = executor.submit(ScanService.check_ssl, url)
+            future_domain = executor.submit(ScanService.check_domain_age, url)
+            
+            # 1. Heuristic Engine result
+            heuristics = future_heuristics.result()
+            results["details"]["heuristics"] = heuristics
+            results["risk_score"] += heuristics.get("score", 0)
+            
+            # 2. Redirect Chain result
+            redirects = future_redirects.result()
+            results["details"]["redirects"] = redirects
+            results["risk_score"] += (redirects.get("count", 0) * 5)
+            
+            # 3. SSL Check result
+            ssl_info = future_ssl.result()
+            results["details"]["ssl"] = ssl_info
+            if not ssl_info.get("valid") and ssl_info.get("reason") == "No HTTPS":
+                results["risk_score"] += 20
+            
+            # 4. Domain Age result
+            domain_info = future_domain.result()
+            results["details"]["domain"] = domain_info
+            if domain_info.get("age_days", 999) < 30: 
+                 results["risk_score"] += 20
         
         # Final status determination
         risk_score = int(results["risk_score"])
