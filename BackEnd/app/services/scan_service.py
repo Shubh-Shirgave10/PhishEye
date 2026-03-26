@@ -137,7 +137,7 @@ class ScanService:
                 
                 if prediction == 0:
                     ml_status = "Malicious"
-                    ml_score = 50 # Balanced weight for hybrid engine to prevent false suspicious
+                    ml_score = 40 # Reduced from 50 to prevent false suspicious
                 else:
                     ml_status = "Safe"
                     ml_score = 0
@@ -190,7 +190,7 @@ class ScanService:
         if risk_score >= 85: 
             results["status"] = "Malicious"
             results["confidence"] = 0.92
-        elif risk_score >= 45: 
+        elif risk_score >= 55:  # Increased from 45 to reduce false positives
             results["status"] = "Suspicious"
             results["confidence"] = 0.75
         else:
@@ -220,7 +220,7 @@ class ScanService:
                 score += 15
                 
         # Length
-        if len(url) > 80: # Lowered from 150
+        if len(url) > 100: # Reverted partially
             score += 10
             
         return {"score": score}
