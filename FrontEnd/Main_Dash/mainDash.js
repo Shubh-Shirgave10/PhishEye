@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch Real Dashboard Stats
   if (token) {
-    fetch('http://localhost:5000/api/history', {
+    fetch('/api/history', {
       headers: { 'Authorization': 'Bearer ' + token }
     })
       .then(response => response.json())

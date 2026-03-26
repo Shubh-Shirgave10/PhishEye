@@ -15,22 +15,32 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    if User.objects(email=data.get('email')).first():
-        return jsonify({"message": "User already exists"}), 409
-    
-    new_user = User(email=data['email'], phone=data.get('phone'))
-    new_user.set_password(data['password'])
-    
-    # Generate OTP secret (legacy TOTP support)
-    new_user.otp_secret = pyotp.random_base32()
-    
-    new_user.save()
-    
-    return jsonify({
-        "message": "User registered successfully.",
-        "user_id": str(new_user.id)
-    }), 201
+    try:
+        data = request.get_json() or {}
+        email = data.get('email', '').strip().lower()
+        password = data.get('password')
+        phone = data.get('phone')
+
+        if not email or not password:
+            return jsonify({"message": "Email and password are required"}), 400
+
+        if User.objects(email=email).first():
+            return jsonify({"message": "User already exists"}), 409
+        
+        new_user = User(email=email, phone=phone)
+        new_user.set_password(password)
+        
+        # Generate OTP secret (legacy TOTP support)
+        new_user.otp_secret = pyotp.random_base32()
+        new_user.save()
+        
+        return jsonify({
+            "message": "User registered successfully.",
+            "user_id": str(new_user.id)
+        }), 201
+    except Exception as e:
+        print(f"Registration Error: {str(e)}")
+        return jsonify({"message": "Registration failed", "error": str(e)}), 500
 
 @auth_bp.route('/login', methods=['POST'])
 @limiter.limit("5 per minute")
@@ -39,26 +49,33 @@ def login():
     Primary login endpoint used by the web frontend.
     """
     data = request.get_json() or {}
-    email = data.get('email')
+    email = data.get('email', '').strip().lower()
     password = data.get('password')
 
-    user = User.objects(email=email).first()
-    
-    if not user or not user.check_password(password):
-        log_event(email, 'LOGIN_ATTEMPT', 'FAILED', 'Invalid credentials')
-        return jsonify({"message": "Invalid credentials"}), 401
+    try:
+        user = User.objects(email=email).first()
+        
+        if not user or not user.check_password(password):
+            log_event(email, 'LOGIN_ATTEMPT', 'FAILED', 'Invalid credentials')
+            return jsonify({"message": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=str(user.id))
-    refresh_token = create_refresh_token(identity=str(user.id))
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
 
-    log_event(str(user.id), 'LOGIN', 'SUCCESS')
+        log_event(str(user.id), 'LOGIN', 'SUCCESS')
 
-    return jsonify({
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "user_id": str(user.id),
-        "email": user.email
-    }), 200
+        return jsonify({
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user_id": str(user.id),
+            "email": user.email
+        }), 200
+    except Exception as e:
+        print(f"Login Error: {str(e)}")
+        return jsonify({
+            "message": "Login failed due to database connection issue",
+            "error": str(e)
+        }), 500
 
 @auth_bp.route('/forgot-password', methods=['POST'])
 def forgot_password():

@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    fetch('http://localhost:5000/api/scan', {
+    fetch('/api/scan', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

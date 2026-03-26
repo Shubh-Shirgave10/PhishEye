@@ -18,3 +18,4 @@ pandas
 python-Levenshtein
 scikit-learn
 gunicorn
+dnspython
