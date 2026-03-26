@@ -216,10 +216,12 @@ class ScanService:
     @staticmethod
     def check_redirects(url):
         try:
-            response = requests.get(url, allow_redirects=True, timeout=5)
+            # Use stream=True to prevent fully downloading large payloads
+            response = requests.get(url, allow_redirects=True, timeout=3, stream=True)
+            response.close()
             return {"count": len(response.history), "final_url": response.url}
-        except:
-            return {"count": 0, "error": "Could not follow redirects"}
+        except Exception as e:
+            return {"count": 0, "error": f"Could not follow redirects: {str(e)}"}
 
     @staticmethod
     def check_ssl(url):
@@ -228,21 +230,29 @@ class ScanService:
             return {"valid": False, "reason": "No HTTPS"}
         
         try:
-            hostname = parsed.netloc
+            hostname = parsed.netloc.split(':')[0] # Ensure no port in hostname
             context = ssl.create_default_context()
-            with socket.create_connection((hostname, 443), timeout=5) as sock:
+            with socket.create_connection((hostname, 443), timeout=3) as sock: # Reduced timeout to 3
                 with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                     cert = ssock.getpeercert()
                     return {"valid": True, "issued_to": hostname}
-        except:
-            return {"valid": False, "reason": "SSL Handshake failed"}
+        except Exception as e:
+            return {"valid": False, "reason": f"SSL Handshake failed: {str(e)}"}
 
     @staticmethod
     def check_domain_age(url):
         parsed = urlparse(url)
-        domain = parsed.netloc
+        domain = parsed.netloc.split(':')[0]
         try:
-            w = whois.whois(domain)
+            import concurrent.futures
+            def _do_whois():
+                return whois.whois(domain)
+
+            # Cap the WHOIS lookup at 3 seconds as it can hang indefinitely
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(_do_whois)
+                w = future.result(timeout=3)
+                
             creation_date = w.creation_date
             if isinstance(creation_date, list):
                 creation_date = creation_date[0]
@@ -251,5 +261,5 @@ class ScanService:
                 age = (datetime.now() - creation_date).days
                 return {"age_days": age, "created": creation_date.isoformat()}
             return {"age_days": 999, "reason": "No creation date found"}
-        except:
-            return {"age_days": 365, "reason": "WHOIS lookup failed"} # Default to safe-ish if fails
+        except Exception as e:
+            return {"age_days": 365, "reason": f"WHOIS failed or timed out: {str(e)}"}
