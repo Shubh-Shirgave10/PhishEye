@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alex: {
             name: "Shubham Shirgave",
             role: "Cybersecurity Specialist",
-            bio: "Shubham has over 10 years of experience in ethical hacking and network security. He leads the threat detection algorithms at Phisheye.",
+            bio: "Shubham works on implementing security mechanisms and improving threat detection algorithms. He ensures that Phisheye follows best security practices and stays updated with the latest cyber attack trends.",
             email: "shubhamshirgave@gmail.com",
             photo: "https://github.com/Shubh-Shirgave10.png",
             socials: [
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sarah: {
             name: "Yash Naik",
             role: "Security Analyst",
-            bio: "Yash specializes in social engineering patterns and phishing trends. Her research powers our AI's predictive capabilities.",
+            bio: "Yash specializes in identifying phishing patterns and analyzing social engineering attacks. He focuses on building detection logic that helps Phisheye accurately classify malicious websites and protect users from cyber threats.",
             email: "yashnaik@gmail.com",
             photo: "https://github.com/yashnaik70.png",
             socials: [
@@ -103,25 +103,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 { platform: "Github", url: "https://github.com/yashnaik70", iconClass: "fa-brands fa-github" }
             ]
         },
-        mike: {
-            name: "Mahek Killedar",
-            role: "Lead Frontend Dev",
-            bio: "Mahek is passionate about creating intuitive and secure user interfaces. He ensures that security doesn't come at the cost of usability.",
-            email: "mahekkilledar@gmail.com",
-            photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mahek&style=circle&backgroundColor=b6e3f4",
-            socials: [
-                { platform: "LinkedIn", url: "https://www.linkedin.com/in/mahek-killedar-b35654276/", iconClass: "fa-brands fa-linkedin-in" },
-                { platform: "Github", url: "https://github.com/", iconClass: "fa-brands fa-github" }
-            ]
-        },
         emily: {
             name: "Pratiksha Patil",
-            role: "Full Stack Engineer",
-            bio: "Pratiksha architects the scalable infrastructure behind Phisheye. She loves optimizing database queries and API response times.",
+            role: "Full Stack Developer",
+            bio: "Pratiksha is responsible for developing and maintaining the backend and frontend of Phisheye. She ensures smooth API communication, efficient database handling, and overall system performance.",
             email: "pratikshapatil@gmail.com",
             photo: "https://media.licdn.com/dms/image/v2/D5603AQG-pkQOhsNobA/profile-displayphoto-shrink_200_200/B56ZS7hCaYHwAY-/0/1738312789114?e=1774483200&v=beta&t=75vFaAMbd9x1NF3OfSsxYUJv293WT78q96Y5O1nulXw",
             socials: [
                 { platform: "LinkedIn", url: "https://www.linkedin.com/in/pratiksha-patil-190205300/", iconClass: "fa-brands fa-linkedin-in" },
+                { platform: "Github", url: "https://github.com/", iconClass: "fa-brands fa-github" }
+            ]
+        },
+        mike: {
+            name: "Mahek Killedar",
+            role: "Frontend Developer",
+            bio: "Mahek designs and develops user-friendly interfaces for Phisheye. She focuses on creating responsive, secure, and visually appealing UI components to enhance user experience.",
+            email: "mahekkilledar@gmail.com",
+            photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mahek&style=circle&backgroundColor=b6e3f4",
+            socials: [
+                { platform: "LinkedIn", url: "https://www.linkedin.com/in/mahek-killedar-b35654276/", iconClass: "fa-brands fa-linkedin-in" },
                 { platform: "Github", url: "https://github.com/", iconClass: "fa-brands fa-github" }
             ]
         }

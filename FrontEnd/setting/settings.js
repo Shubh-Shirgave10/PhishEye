@@ -339,6 +339,26 @@ function initControls() {
     });
   });
 
+  // Wire up all other checkboxes/selects for instant save
+  const instantControls = [
+    'neonGlow', 'autoScanOnLoad', 'deepScanMode', 'autoBlock',
+    'saveHistory', 'historyTTL', 'enableNotif', 'dailySummary', 'sessionTimeout'
+  ];
+
+  instantControls.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const eventType = el.tagName === 'SELECT' ? 'change' : 'change';
+    el.addEventListener(eventType, () => {
+      readUIToSettings();
+      saveSettings();
+      // Apply neon glow instantly if toggled
+      if (id === 'neonGlow') {
+        applyTheme(); // Reinforce theme/glow
+      }
+    });
+  });
+
   // Save Button
   const saveBtn = document.getElementById('saveSettings');
   if (saveBtn) {
