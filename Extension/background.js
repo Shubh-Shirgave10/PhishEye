@@ -41,7 +41,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             return;
         }
 
-        fetch("http://localhost:5000/api/scan", {
+        fetch("https://phisheye-2-dbpr.onrender.com/api/scan", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

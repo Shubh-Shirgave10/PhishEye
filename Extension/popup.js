@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
       saveTokenBtn.disabled = true;
       saveTokenBtn.textContent = 'Linking...';
 
-      chrome.storage.local.set({ token: token, autoScan: false }, () => {
-        showMain(token, false);
-        fetch('http://localhost:5000/api/extension/link', {
+        chrome.storage.local.set({ token: token, autoScan: false }, () => {
+          showMain(token, false);
+          fetch('https://phisheye-2-dbpr.onrender.com/api/extension/link', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
     statusTitle.textContent = 'Analyzing Site...';
     statusDesc.textContent = 'Checking threat signatures and AI patterns';
 
-    fetch('http://localhost:5000/api/scan', {
+    fetch('https://phisheye-2-dbpr.onrender.com/api/scan', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
