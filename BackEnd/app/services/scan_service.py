@@ -163,34 +163,52 @@ class ScanService:
             future_ssl = executor.submit(ScanService.check_ssl, url)
             future_domain = executor.submit(ScanService.check_domain_age, url)
             
+            # Use wait to ensure we don't hang forever, though individual tools have timeouts
+            done, not_done = concurrent.futures.wait(
+                [future_heuristics, future_redirects, future_ssl, future_domain], 
+                timeout=10
+            )
+
             # 1. Heuristic Engine result
-            heuristics = future_heuristics.result()
-            results["details"]["heuristics"] = heuristics
-            results["risk_score"] += heuristics.get("score", 0)
-            
+            try:
+                heuristics = future_heuristics.result(timeout=1)
+                results["details"]["heuristics"] = heuristics
+                results["risk_score"] += heuristics.get("score", 0)
+            except Exception as e:
+                results["details"]["heuristics"] = {"error": str(e), "score": 0}
+
             # 2. Redirect Chain result
-            redirects = future_redirects.result()
-            results["details"]["redirects"] = redirects
-            results["risk_score"] += (redirects.get("count", 0) * 5)
-            
+            try:
+                redirects = future_redirects.result(timeout=1)
+                results["details"]["redirects"] = redirects
+                results["risk_score"] += (redirects.get("count", 0) * 5)
+            except Exception as e:
+                results["details"]["redirects"] = {"error": str(e), "count": 0}
+
             # 3. SSL Check result
-            ssl_info = future_ssl.result()
-            results["details"]["ssl"] = ssl_info
-            if not ssl_info.get("valid") and ssl_info.get("reason") == "No HTTPS":
-                results["risk_score"] += 20
-            
+            try:
+                ssl_info = future_ssl.result(timeout=1)
+                results["details"]["ssl"] = ssl_info
+                if not ssl_info.get("valid") and ssl_info.get("reason") == "No HTTPS":
+                    results["risk_score"] += 15 # Reduced from 20
+            except Exception as e:
+                results["details"]["ssl"] = {"error": str(e), "valid": False}
+
             # 4. Domain Age result
-            domain_info = future_domain.result()
-            results["details"]["domain"] = domain_info
-            if domain_info.get("age_days", 999) < 30: 
-                 results["risk_score"] += 20
+            try:
+                domain_info = future_domain.result(timeout=1)
+                results["details"]["domain"] = domain_info
+                if domain_info.get("age_days", 999) < 30: 
+                     results["risk_score"] += 15 # Reduced from 20
+            except Exception as e:
+                results["details"]["domain"] = {"error": str(e), "age_days": 365}
         
         # Final status determination
         risk_score = int(results["risk_score"])
-        if risk_score >= 85: 
+        if risk_score >= 80: # Lowered threshold slightly but weights are more balanced
             results["status"] = "Malicious"
             results["confidence"] = 0.92
-        elif risk_score >= 55:  # Increased from 45 to reduce false positives
+        elif risk_score >= 50: # Increased from 45/55 to find better middle ground
             results["status"] = "Suspicious"
             results["confidence"] = 0.75
         else:
@@ -205,23 +223,26 @@ class ScanService:
         parsed = urlparse(url)
         domain = parsed.netloc
         
-        # IP as domain
+        # 1. IP as domain (Strong indicator)
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", domain):
-            score += 50 # Increased from 40
+            score += 50
             
-        # Too many subdomains
-        if domain.count('.') > 3: # Lowered from 4
-            score += 20
+        # 2. Too many subdomains
+        if domain.count('.') > 4: 
+            score += 15
             
-        # Suspect keywords (Broadened)
+        # 3. Suspect keywords (Capped at 20 total)
         keywords = ['login', 'verify', 'account', 'update', 'secure', 'signin', 'banking', 'wallet', 'auth']
+        keyword_score = 0
         for kw in keywords:
             if kw in url.lower():
-                score += 15
+                keyword_score += 10
+        
+        score += min(keyword_score, 20) # Max 20 points from keywords
                 
-        # Length
-        if len(url) > 100: # Reverted partially
-            score += 10
+        # 4. Excessive Length
+        if len(url) > 120:
+            score += 5
             
         return {"score": score}
 
