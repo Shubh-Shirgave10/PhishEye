@@ -45,7 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
           },
-          body: JSON.stringify({ device_id: 'browser-extension-' + Date.now() })
+          body: JSON.stringify({ 
+            device_id: 'browser-extension-' + Date.now(),
+            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Edge"
+          })
         }).catch(err => console.error(err));
       });
     }
@@ -192,8 +195,19 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => {
         statusIcon.textContent = '❌';
         statusTitle.textContent = 'Scan Failed';
-        statusDesc.textContent = error?.message || 'Could not reach PhishEye cloud engine.';
-        console.error(error);
+        
+        // Detailed error context for the UI
+        let message = 'Could not reach PhishEye cloud engine.';
+        if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+          message = 'Authentication invalid. Try re-linking your account.';
+        } else if (error.message.includes('Fetch') || error.message.includes('Network')) {
+          message = 'Network error. Please check your internet or VPN.';
+        } else if (error.message) {
+          message = error.message;
+        }
+
+        statusDesc.textContent = message;
+        console.error("Scan Error Details:", error);
       });
   }
 });

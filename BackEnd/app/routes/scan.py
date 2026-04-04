@@ -46,26 +46,32 @@ def scan():
         
         analysis = ScanService.analyze_url(url)
         
-        # Save scan result if user is authenticated
+        # Save scan result if user is authenticated (Optional: Don't fail if DB is slow/fails)
         if user_id:
-            new_scan = Scan(
-                user_id=str(user_id),
-                url=url,
-                result=analysis.get('status'),
-                confidence=analysis.get('confidence'),
-                risk_score=analysis.get('risk_score'),
-                domain_age_days=analysis.get('details', {}).get('domain', {}).get('age_days'),
-                has_ssl=analysis.get('details', {}).get('ssl', {}).get('valid')
-            )
-            new_scan.save()
+            try:
+                new_scan = Scan(
+                    user_id=str(user_id),
+                    url=url,
+                    result=analysis.get('status'),
+                    confidence=analysis.get('confidence'),
+                    risk_score=analysis.get('risk_score'),
+                    domain_age_days=analysis.get('details', {}).get('domain', {}).get('age_days'),
+                    has_ssl=analysis.get('details', {}).get('ssl', {}).get('valid')
+                )
+                new_scan.save()
+            except Exception as db_err:
+                print(f"⚠️ History persistence failed: {db_err}")
+                # We continue anyway to return the scan result
         
         return jsonify(analysis), 200
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         # Defensive fallback – never return HTML error pages to JS clients
         return jsonify({
             "status": "Error",
-            "message": "Scan failed due to an internal error.",
+            "message": "The PhishEye engine encountered an error while analyzing this URL.",
             "details": {"error": str(e)}
         }), 500
 

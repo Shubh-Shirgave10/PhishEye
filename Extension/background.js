@@ -113,7 +113,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 chrome.tabs.sendMessage(tabId, { action: "SHOW_POPUP", status: status }).catch(() => { });
             })
             .catch((error) => {
-                console.error("❌ PhishEye Scan Error:", error);
+                console.error("❌ PhishEye Background Scan Error:", error);
+                
+                // Clear the badge on failure to avoid giving the user a false sense of security
+                chrome.action.setBadgeText({ text: "", tabId });
+                
+                // Notify content script of failure
+                chrome.tabs.sendMessage(tabId, { action: "SHOW_POPUP", status: "error" }).catch(() => { });
 
                 // Allow retry if backend fails
                 delete scanCache[tabId];
