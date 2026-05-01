@@ -106,7 +106,8 @@ class ScanService:
             'zoom.us', 'slack.com', 'discord.com', 'spotify.com', 'adobe.com',
             'salesforce.com', 'dropbox.com', 'paypal.com', 'microsoftonline.com',
             'bing.com', 'yahoo.com', 'duckduckgo.com', 'medium.com', 'dev.to',
-            'render.com', 'heroku.com', 'vercel.app', 'netlify.app'
+            'render.com', 'heroku.com', 'vercel.app', 'netlify.app', 'pypi.org',
+            'python.org', 'npmjs.com', 'cloudflare.com', 'aws.amazon.com', 'azure.com'
         ]
         
         if any(domain == td or domain.endswith('.' + td) for td in trusted_domains):
@@ -141,7 +142,7 @@ class ScanService:
                 
                 if prediction == 0:
                     ml_status = "Malicious"
-                    ml_score = 40 # Increased to catch more threats
+                    ml_score = 30 # Reduced impact to prevent false positives
                 else:
                     ml_status = "Safe"
                     ml_score = 0
@@ -209,10 +210,10 @@ class ScanService:
         
         # Final status determination
         risk_score = int(results["risk_score"])
-        if risk_score >= 80: 
+        if risk_score >= 85: 
             results["status"] = "Malicious"
             results["confidence"] = 0.92
-        elif risk_score >= 45: # Lowered threshold to catch sites like testphp.vulnweb.com
+        elif risk_score >= 60: # Increased threshold to reduce false warnings
             results["status"] = "Suspicious"
             results["confidence"] = 0.75
         else:
@@ -241,7 +242,7 @@ class ScanService:
         keyword_score = 0
         for kw in keywords:
             if kw in url.lower():
-                keyword_score += 15 # Increased weight per keyword
+                keyword_score += 10 # Reduced weight per keyword
         
         score += min(keyword_score, 40) # Max 40 points from keywords
                 

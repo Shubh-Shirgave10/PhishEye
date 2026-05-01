@@ -6,8 +6,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // For suspicious or malicious → show big fullscreen warning
         if (status === "suspicious" || status === "malicious" || status === "phishing") {
             showSuspiciousWarning(status);
-        } else {
-            // For safe & error → show small toast popup
+        } else if (status !== "safe") {
+            // Only show small toast for other results (e.g. errors), skip "safe"
             showToast(status);
         }
     }

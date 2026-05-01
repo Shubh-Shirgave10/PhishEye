@@ -17,3 +17,5 @@
 2026-03-06 13:48:19,434 - INFO - User: yashnaik459@gmail.com | Event: LOGIN_ATTEMPT | Status: FAILED | Details: Invalid credentials
 2026-03-06 13:48:29,686 - INFO - User: 4 | Event: LOGIN | Status: SUCCESS | Details: None
 2026-03-06 13:59:25,088 - INFO - User: 1 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-05-01 21:15:59,202 - INFO - User: 69c513762aa8aa1764a48414 | Event: LOGIN | Status: SUCCESS | Details: None
+2026-05-01 21:16:44,842 - INFO - User: 69ef3afb81d911675a2051e7 | Event: LOGIN | Status: SUCCESS | Details: None

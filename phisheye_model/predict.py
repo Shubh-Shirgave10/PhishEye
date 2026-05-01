@@ -45,7 +45,7 @@ features = extract_features(url)
 
 prediction = model.predict([features])
 
-if prediction[0] == 1:
+if prediction[0] == 0:
     print("⚠ Phishing Website")
 else:
     print("✅ Safe Website")

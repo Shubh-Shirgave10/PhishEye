@@ -23,3 +23,4 @@ Thumbs.db
 *.db
 /BackEnd/.env
 /BackEnd/instance/
+/BackEnd/logs/
