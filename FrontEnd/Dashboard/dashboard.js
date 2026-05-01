@@ -299,10 +299,11 @@ if (startBtn) {
           }
 
           .download-ext-btn {
-            display: inline-flex; align-items: center; gap: 8px;
+            display: inline-flex; align-items: center; gap: 5px;
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white; border: none; padding: 10px 20px; border-radius: 10px;
-            font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+            color: white; border: none; padding: 6px 12px; border-radius: 6px;
+            font-weight: 600; font-size: 11px; cursor: pointer; text-decoration: none;
+            margin: 8px 0;
           }
 
           .btn-primary {
