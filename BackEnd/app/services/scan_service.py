@@ -102,7 +102,11 @@ class ScanService:
             'live.com', 'apple.com', 'amazon.com', 'github.com',
             'youtube.com', 'facebook.com', 'instagram.com', 'linkedin.com',
             'twitter.com', 'x.com', 'reddit.com', 'netflix.com',
-            'chatgpt.com', 'openai.com'
+            'chatgpt.com', 'openai.com', 'wikipedia.org', 'stackoverflow.com',
+            'zoom.us', 'slack.com', 'discord.com', 'spotify.com', 'adobe.com',
+            'salesforce.com', 'dropbox.com', 'paypal.com', 'microsoftonline.com',
+            'bing.com', 'yahoo.com', 'duckduckgo.com', 'medium.com', 'dev.to',
+            'render.com', 'heroku.com', 'vercel.app', 'netlify.app'
         ]
         
         if any(domain == td or domain.endswith('.' + td) for td in trusted_domains):
@@ -137,7 +141,7 @@ class ScanService:
                 
                 if prediction == 0:
                     ml_status = "Malicious"
-                    ml_score = 40 # Reduced from 50 to prevent false suspicious
+                    ml_score = 30 # Reduced from 40 to prevent false suspicious
                 else:
                     ml_status = "Safe"
                     ml_score = 0
@@ -205,10 +209,10 @@ class ScanService:
         
         # Final status determination
         risk_score = int(results["risk_score"])
-        if risk_score >= 80: # Lowered threshold slightly but weights are more balanced
+        if risk_score >= 85: # Increased from 80 to reduce false positives
             results["status"] = "Malicious"
             results["confidence"] = 0.92
-        elif risk_score >= 50: # Increased from 45/55 to find better middle ground
+        elif risk_score >= 60: # Increased from 50
             results["status"] = "Suspicious"
             results["confidence"] = 0.75
         else:
@@ -225,7 +229,8 @@ class ScanService:
         
         # 1. IP as domain (Strong indicator)
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", domain):
-            score += 50
+            if domain not in ['127.0.0.1', '0.0.0.0']:
+                score += 50
             
         # 2. Too many subdomains
         if domain.count('.') > 4: 
