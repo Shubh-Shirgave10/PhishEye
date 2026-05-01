@@ -299,33 +299,24 @@ if (startBtn) {
           }
 
           .download-ext-btn {
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex; align-items: center; gap: 5px;
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white; border: none; padding: 8px 16px; border-radius: 12px;
-            font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none;
-            margin: 12px 0 8px; transition: 0.3s ease;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+            color: white; border: none; padding: 6px 12px; border-radius: 6px;
+            font-weight: 600; font-size: 11px; cursor: pointer; text-decoration: none;
+            margin: 8px 0;
           }
-          .download-ext-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3); }
-          .download-ext-btn svg { width: 12px; height: 12px; }
 
           .btn-primary {
             background: var(--modal-btn-primary);
-            color: white; border: none; padding: 12px 24px; border-radius: 12px; flex: 2;
-            font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 153, 204, 0.3);
+            color: white; border: none; padding: 18px 32px; border-radius: 16px; flex: 2;
+            font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
           }
-          .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 153, 204, 0.4); }
           .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
           .btn-secondary {
-            background: var(--modal-btn-secondary); color: var(--modal-text-muted); 
-            border: 1px solid var(--modal-border);
-            padding: 12px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; 
-            transition: 0.3s; flex: 1;
-            font-size: 13px;
+            background: var(--modal-btn-secondary); color: var(--modal-text-muted); border: 1px solid var(--modal-border);
+            padding: 18px 24px; border-radius: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; flex: 1;
           }
-          .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); color: var(--modal-text); }
 
           .checkbox-container label { font-size: 14px; color: var(--modal-text-muted); cursor: pointer; }
         </style>
