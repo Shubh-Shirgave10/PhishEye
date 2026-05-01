@@ -210,10 +210,10 @@ class ScanService:
         
         # Final status determination
         risk_score = int(results["risk_score"])
-        if risk_score >= 85: 
+        if risk_score >= 80: 
             results["status"] = "Malicious"
             results["confidence"] = 0.92
-        elif risk_score >= 60: # Increased threshold to reduce false warnings
+        elif risk_score >= 30: # Further lowered to catch more threats
             results["status"] = "Suspicious"
             results["confidence"] = 0.75
         else:
