@@ -260,11 +260,53 @@ section {
   opacity: 0.6;
 }
 
-/* MOBILE RESPONSIVE FIX */
 @media (max-width: 900px) {
   .why-container,
   .how-container,
   .pricing-container {
     flex-wrap: wrap;
   }
+}
+
+/* --- Light Mode Overrides --- */
+[data-theme="light"] body {
+  background: #f0f4f8;
+  color: #1a202c;
+}
+
+[data-theme="light"] .nav {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .why-card,
+[data-theme="light"] .how-step,
+[data-theme="light"] .price-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .why-card:hover,
+[data-theme="light"] .how-step:hover,
+[data-theme="light"] .price-card:hover {
+  background: #ffffff;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .security-item {
+  background: #ffffff;
+  color: #2d3748;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .security-item:hover {
+  background: #f8fafc;
+  border-color: #0099cc;
+  box-shadow: 0 0 15px rgba(0, 153, 204, 0.2);
+}
+
+[data-theme="light"] .footer {
+  color: #4a5568;
 }

@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user_id', data.user_id);
                 localStorage.setItem('user_email', email);
-                window.location.href = '../add-extension/add-extension.html';
+                window.location.href = '../Dashboard/dashboard.html';
 
             } catch (error) {
                 alert(error.message);

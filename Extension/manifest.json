@@ -15,7 +15,7 @@
         "scripting"
     ],
     "host_permissions": [
-        "https://phisheye-2-dbpr.onrender.com/*",
+        "http://127.0.0.1:5000/*",
         "<all_urls>"
     ],
     "background": {
