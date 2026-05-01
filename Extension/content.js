@@ -3,11 +3,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         const statusRaw = request.status || "Safe";
         const status = String(statusRaw).toLowerCase();
 
-        // For suspicious → show big fullscreen warning
-        if (status === "suspicious") {
-            showSuspiciousWarning();
+        // For suspicious or malicious → show big fullscreen warning
+        if (status === "suspicious" || status === "malicious" || status === "phishing") {
+            showSuspiciousWarning(status);
         } else {
-            // For safe & malicious/unsafe → show small toast popup
+            // For safe & error → show small toast popup
             showToast(status);
         }
     }
@@ -117,9 +117,18 @@ function showToast(status) {
 }
 
 // ============================================
-// BIG FULLSCREEN WARNING (Suspicious)
+// BIG FULLSCREEN WARNING (Suspicious / Malicious)
 // ============================================
-function showSuspiciousWarning() {
+function showSuspiciousWarning(status) {
+    const isMalicious = status === "malicious" || status === "phishing";
+    const accentColor = isMalicious ? '#f87171' : '#fbbf24';
+    const accentGlow = isMalicious ? 'rgba(248, 113, 113, 0.3)' : 'rgba(251, 191, 36, 0.3)';
+    const accentBg = isMalicious ? 'rgba(248, 113, 113, 0.15)' : 'rgba(251, 191, 36, 0.15)';
+    const warningIcon = isMalicious ? '🚨' : '⚠️';
+    const warningTitle = isMalicious ? 'Dangerous Website Detected' : 'Suspicious Website Detected';
+    const warningDesc = isMalicious 
+        ? `PhishEye AI has confirmed <strong style="color: ${accentColor};">malicious threats</strong> on this website. This page is known for phishing and credential theft.`
+        : `PhishEye AI has detected <strong style="color: ${accentColor};">unusual patterns</strong> on this website. This site may be attempting to collect your personal information.`;
     // Remove existing warning if any
     const existing = document.getElementById('phisheye-warning-overlay');
     if (existing) existing.remove();
@@ -151,9 +160,9 @@ function showSuspiciousWarning() {
             border-radius: 28px;
             padding: 48px 40px;
             text-align: center;
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            border: 1px solid ${accentColor}33;
             box-shadow:
-                0 0 80px rgba(251, 191, 36, 0.15),
+                0 0 80px ${accentColor}26,
                 0 40px 80px rgba(0, 0, 0, 0.5),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
             animation: phisheye-cardSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -165,7 +174,7 @@ function showSuspiciousWarning() {
                 position: absolute; top: 0; left: 0; right: 0; height: 4px;
                 background: repeating-linear-gradient(
                     90deg,
-                    #fbbf24 0px, #fbbf24 20px,
+                    ${accentColor} 0px, ${accentColor} 20px,
                     #020617 20px, #020617 40px
                 );
                 background-size: 40px 4px;
@@ -175,29 +184,28 @@ function showSuspiciousWarning() {
             <!-- Warning icon -->
             <div style="
                 width: 88px; height: 88px;
-                background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+                background: linear-gradient(135deg, ${accentBg}, rgba(251, 191, 36, 0.05));
                 border-radius: 24px; display: flex; align-items: center; justify-content: center;
                 margin: 0 auto 28px;
-                border: 2px solid rgba(251, 191, 36, 0.3);
+                border: 2px solid ${accentColor}4d;
                 font-size: 40px;
                 animation: phisheye-iconPulse 2s ease-in-out infinite;
-                box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
-            ">⚠️</div>
+                box-shadow: 0 0 30px ${accentColor}33;
+            ">${warningIcon}</div>
 
             <!-- Title -->
             <h2 style="
-                color: #fbbf24; font-size: 26px; font-weight: 800;
+                color: ${accentColor}; font-size: 26px; font-weight: 800;
                 margin: 0 0 12px; letter-spacing: -0.02em;
-                text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
-            ">Suspicious Website Detected</h2>
+                text-shadow: 0 0 20px ${accentGlow};
+            ">${warningTitle}</h2>
 
             <!-- Subtitle -->
             <p style="
                 color: #94a3b8; font-size: 15px; line-height: 1.6;
                 margin: 0 0 32px; max-width: 380px; margin-left: auto; margin-right: auto;
             ">
-                PhishEye AI has detected <strong style="color: #fbbf24;">unusual patterns</strong> on this website.
-                This site may be attempting to collect your personal information or credentials.
+                ${warningDesc}
             </p>
 
             <!-- Threat details card -->
@@ -208,24 +216,24 @@ function showSuspiciousWarning() {
                 margin-bottom: 32px; text-align: left;
             ">
                 <div style="
-                    font-size: 11px; font-weight: 700; color: #fbbf24;
+                    font-size: 11px; font-weight: 700; color: ${accentColor};
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
                     display: flex; align-items: center; gap: 6px;
                 ">
-                    <span style="width: 6px; height: 6px; background: #fbbf24; border-radius: 50; display: inline-block; animation: phisheye-blink 1s ease-in-out infinite;"></span>
+                    <span style="width: 6px; height: 6px; background: ${accentColor}; border-radius: 50%; display: inline-block; animation: phisheye-blink 1s ease-in-out infinite;"></span>
                     Threat Analysis
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5e1;">
-                        <span style="color: #fbbf24; font-size: 16px;">🔍</span>
-                        <span>Suspicious URL structure or domain pattern</span>
+                        <span style="color: ${accentColor}; font-size: 16px;">🔍</span>
+                        <span>${isMalicious ? 'Confirmed malicious domain signature' : 'Suspicious URL structure or domain pattern'}</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5e1;">
-                        <span style="color: #fbbf24; font-size: 16px;">🧠</span>
-                        <span>AI confidence: Potential phishing behavior</span>
+                        <span style="color: ${accentColor}; font-size: 16px;">🧠</span>
+                        <span>${isMalicious ? 'AI confidence: High threat detection' : 'AI confidence: Potential phishing behavior'}</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5e1;">
-                        <span style="color: #fbbf24; font-size: 16px;">⏱️</span>
+                        <span style="color: ${accentColor}; font-size: 16px;">⏱️</span>
                         <span>Scanned just now by PhishEye engine</span>
                     </div>
                 </div>
@@ -237,7 +245,7 @@ function showSuspiciousWarning() {
                 border: 1px solid rgba(255, 255, 255, 0.06);
                 border-radius: 10px; padding: 10px 14px;
                 margin-bottom: 28px; font-family: 'Courier New', monospace;
-                font-size: 11px; color: #fbbf24; word-break: break-all;
+                font-size: 11px; color: ${accentColor}; word-break: break-all;
                 text-align: left; max-height: 40px; overflow: hidden;
             ">${window.location.href}</div>
 
@@ -245,12 +253,12 @@ function showSuspiciousWarning() {
             <div style="display: flex; gap: 14px;">
                 <button id="phisheye-goback-btn" style="
                     flex: 1.3;
-                    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                    background: linear-gradient(135deg, ${accentColor} 0%, ${isMalicious ? '#ef4444' : '#f59e0b'} 100%);
                     color: #020617; border: none;
                     padding: 16px 24px; border-radius: 14px;
                     font-weight: 800; font-size: 15px; cursor: pointer;
                     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+                    box-shadow: 0 6px 20px ${accentColor}4d;
                     font-family: inherit;
                 ">← Go Back to Safety</button>
 
@@ -270,7 +278,7 @@ function showSuspiciousWarning() {
             <p style="
                 font-size: 11px; color: #475569;
                 margin: 20px 0 0; line-height: 1.4;
-            ">Protected by <span style="color: #fbbf24; font-weight: 600;">PhishEye AI</span> • Real-time threat detection</p>
+            ">Protected by <span style="color: ${accentColor}; font-weight: 600;">PhishEye AI</span> • Real-time threat detection</p>
         </div>
     `;
 
@@ -289,11 +297,11 @@ function showSuspiciousWarning() {
     const goBackBtn = document.getElementById('phisheye-goback-btn');
     goBackBtn.addEventListener('mouseover', () => {
         goBackBtn.style.transform = 'translateY(-2px)';
-        goBackBtn.style.boxShadow = '0 10px 30px rgba(251, 191, 36, 0.4)';
+        goBackBtn.style.boxShadow = `0 10px 30px ${accentColor}66`;
     });
     goBackBtn.addEventListener('mouseout', () => {
         goBackBtn.style.transform = '';
-        goBackBtn.style.boxShadow = '0 6px 20px rgba(251, 191, 36, 0.3)';
+        goBackBtn.style.boxShadow = `0 6px 20px ${accentColor}4d`;
     });
 
     // "Continue Anyway" button → dismiss warning
