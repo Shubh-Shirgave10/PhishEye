@@ -31,6 +31,14 @@ function showToast(status) {
         icon = '🛡️';
         title = 'PhishEye Secure';
         desc = 'This website is verified and safe.';
+    } else if (status === 'error') {
+        bgColor = 'rgba(15, 23, 42, 0.95)';
+        textColor = '#94a3b8';
+        borderColor = 'rgba(148, 163, 184, 0.3)';
+        glowColor = 'rgba(0,0,0,0)';
+        icon = '⚠️';
+        title = 'Scan Unavailable';
+        desc = 'Could not connect to PhishEye engine.';
     } else {
         bgColor = 'rgba(2, 6, 23, 0.92)';
         textColor = '#f87171';
