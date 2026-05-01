@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         chrome.storage.local.set({ token: token, autoScan: false }, () => {
           showMain(token, false);
-          fetch('http://localhost:5000/api/extension/link', {
+          fetch('http://127.0.0.1:5000/api/extension/link', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
     statusTitle.textContent = 'Analyzing Site...';
     statusDesc.textContent = 'Checking threat signatures and AI patterns';
 
-    fetch('http://localhost:5000/api/scan-logic/scan', {
-      method: 'POST',
+    fetch("http://127.0.0.1:5000/api/scan-logic/scan", {
+      method: "POST",
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
